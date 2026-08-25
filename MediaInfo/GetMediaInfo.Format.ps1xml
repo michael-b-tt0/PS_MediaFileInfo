@@ -1,6 +1,702 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Configuration>
+
+<SelectionSets>
+  <SelectionSet>
+    <Name>GetMediaInfo.MediaInfoResultTypes</Name>
+    <Types>
+      <TypeName>GetMediaInfo.VideoMediaInfoResult</TypeName>
+      <TypeName>GetMediaInfo.AudioMediaInfoResult</TypeName>
+      <TypeName>GetMediaInfo.ImageMediaInfoResult</TypeName>
+      <TypeName>GetMediaInfo.UnknownMediaInfoResult</TypeName>
+    </Types>
+  </SelectionSet>
+
+  <SelectionSet>
+  <Name>GetMediaInfo.MediaInfoResult.Extended.Types</Name>
+  <Types>
+    <TypeName>GetMediaInfo.VideoMediaInfoResult.Extended</TypeName>
+    <TypeName>GetMediaInfo.AudioMediaInfoResult.Extended</TypeName>
+    <TypeName>GetMediaInfo.ImageMediaInfoResult.Extended</TypeName>
+    <TypeName>GetMediaInfo.UnknownMediaInfoResult.Extended</TypeName>
+  </Types>
+</SelectionSet>
+</SelectionSets>
+
   <ViewDefinitions>
+
+<View>
+  <Name>GetMediaInfo.MediaInfoResult.List</Name>
+
+  <ViewSelectedBy>
+    <SelectionSetName>GetMediaInfo.MediaInfoResultTypes</SelectionSetName>
+  </ViewSelectedBy>
+
+  <ListControl>
+    <ListEntries>
+
+      <!-- Video -->
+      <ListEntry>
+        <EntrySelectedBy>
+          <TypeName>GetMediaInfo.VideoMediaInfoResult</TypeName>
+        </EntrySelectedBy>
+
+        <ListItems>
+          <ListItem>
+            <Label>Name</Label>
+            <PropertyName>Name</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Frame rate</Label>
+            <ScriptBlock>
+              if ($null -ne $_.FrameRate) {
+                '{0:0.###} fps' -f $_.FrameRate
+              }
+            </ScriptBlock>
+          </ListItem>
+
+          <ListItem>
+            <Label>Resolution</Label>
+            <PropertyName>Resolution</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Duration</Label>
+            <ScriptBlock>
+              if ($null -ne $_.Duration) {
+                $_.Duration.ToString('hh\:mm\:ss\.fff')
+              }
+            </ScriptBlock>
+          </ListItem>
+
+          <ListItem>
+            <Label>Video</Label>
+            <PropertyName>VideoCodec</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Audio</Label>
+            <PropertyName>AudioCodec</PropertyName>
+          </ListItem>
+        </ListItems>
+      </ListEntry>
+
+
+      <!-- Audio -->
+      <ListEntry>
+        <EntrySelectedBy>
+          <TypeName>GetMediaInfo.AudioMediaInfoResult</TypeName>
+        </EntrySelectedBy>
+
+        <ListItems>
+          <ListItem>
+            <Label>Name</Label>
+            <PropertyName>Name</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Format</Label>
+            <PropertyName>ContainerFormat</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Duration</Label>
+            <ScriptBlock>
+              if ($null -ne $_.Duration) {
+                $_.Duration.ToString('hh\:mm\:ss\.fff')
+              }
+            </ScriptBlock>
+          </ListItem>
+
+          <ListItem>
+            <Label>Audio</Label>
+            <PropertyName>AudioCodec</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Artist</Label>
+            <PropertyName>Artist</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Album</Label>
+            <PropertyName>Album</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Track</Label>
+            <ScriptBlock>
+              if ($null -ne $_.TrackNumber) {
+                if ($null -ne $_.TrackCount) {
+                  '{0}/{1}' -f $_.TrackNumber, $_.TrackCount
+                } else {
+                  $_.TrackNumber
+                }
+              }
+            </ScriptBlock>
+          </ListItem>
+        </ListItems>
+      </ListEntry>
+
+
+      <!-- Image -->
+      <ListEntry>
+        <EntrySelectedBy>
+          <TypeName>GetMediaInfo.ImageMediaInfoResult</TypeName>
+        </EntrySelectedBy>
+
+        <ListItems>
+          <ListItem>
+            <Label>Name</Label>
+            <PropertyName>Name</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Format</Label>
+            <PropertyName>ImageFormat</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Resolution</Label>
+            <PropertyName>Resolution</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>BitDepth</Label>
+            <PropertyName>BitDepth</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>SizeMiB</Label>
+            <PropertyName>SizeMiB</PropertyName>
+          </ListItem>
+        </ListItems>
+      </ListEntry>
+
+
+      <!-- Unknown / default fallback -->
+      <ListEntry>
+        <ListItems>
+          <ListItem>
+            <Label>Name</Label>
+            <PropertyName>Name</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Format</Label>
+            <PropertyName>ContainerFormat</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>SizeMiB</Label>
+            <PropertyName>SizeMiB</PropertyName>
+          </ListItem>
+        </ListItems>
+      </ListEntry>
+
+    </ListEntries>
+  </ListControl>
+</View>
+
+<View>
+  <Name>GetMediaInfo.MediaInfoResult.Extended.List</Name>
+
+  <ViewSelectedBy>
+    <SelectionSetName>GetMediaInfo.MediaInfoResult.Extended.Types</SelectionSetName>
+  </ViewSelectedBy>
+
+  <ListControl>
+    <ListEntries>
+
+      <!-- Video -->
+      <ListEntry>
+        <EntrySelectedBy>
+          <TypeName>GetMediaInfo.VideoMediaInfoResult.Extended</TypeName>
+        </EntrySelectedBy>
+
+        <ListItems>
+
+          <ListItem>
+            <Label>PSPath</Label>
+            <PropertyName>PSPath</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>LastWriteTime</Label>
+            <PropertyName>LastWriteTime</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Name</Label>
+            <PropertyName>Name</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>BaseName</Label>
+            <PropertyName>BaseName</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>DirectoryName</Label>
+            <PropertyName>DirectoryName</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Extension</Label>
+            <PropertyName>Extension</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Resolution</Label>
+            <PropertyName>Resolution</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Length</Label>
+            <PropertyName>Length</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>SizeMiB</Label>
+            <PropertyName>SizeMiB</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Duration</Label>
+            <PropertyName>Duration</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>ContainerFormat</Label>
+            <PropertyName>ContainerFormat</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>MediaType</Label>
+            <PropertyName>MediaType</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>VideoStreamCount</Label>
+            <PropertyName>VideoStreamCount</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>VideoCodec</Label>
+            <PropertyName>VideoCodec</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>VideoWidth</Label>
+            <PropertyName>VideoWidth</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>VideoHeight</Label>
+            <PropertyName>VideoHeight</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>FrameRateMode</Label>
+            <PropertyName>FrameRateMode</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>FrameRate</Label>
+            <PropertyName>FrameRate</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>VideoBitRate</Label>
+            <PropertyName>VideoBitRate</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>DisplayAspectRatio</Label>
+            <PropertyName>DisplayAspectRatio</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>FormatProfile</Label>
+            <PropertyName>FormatProfile</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>ScanType</Label>
+            <PropertyName>ScanType</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>ColorSpace</Label>
+            <PropertyName>ColorSpace</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>ColorRange</Label>
+            <PropertyName>ColorRange</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>ColorPrimaries</Label>
+            <PropertyName>ColorPrimaries</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>TransferCharacteristics</Label>
+            <PropertyName>TransferCharacteristics</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>MatrixCoefficients</Label>
+            <PropertyName>MatrixCoefficients</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>AudioStreamCount</Label>
+            <PropertyName>AudioStreamCount</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>AudioCodec</Label>
+            <PropertyName>AudioCodec</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>AudioBitRate</Label>
+            <PropertyName>AudioBitRate</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>AudioBitRateMode</Label>
+            <PropertyName>AudioBitRateMode</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>TextStreamCount</Label>
+            <PropertyName>TextStreamCount</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>TextFormats</Label>
+            <PropertyName>TextFormats</PropertyName>
+          </ListItem>
+
+        </ListItems>
+      </ListEntry>
+
+
+      <!-- Audio -->
+      <ListEntry>
+        <EntrySelectedBy>
+          <TypeName>GetMediaInfo.AudioMediaInfoResult.Extended</TypeName>
+        </EntrySelectedBy>
+
+        <ListItems>
+
+          <ListItem>
+            <Label>PSPath</Label>
+            <PropertyName>PSPath</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>LastWriteTime</Label>
+            <PropertyName>LastWriteTime</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Name</Label>
+            <PropertyName>Name</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>BaseName</Label>
+            <PropertyName>BaseName</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>DirectoryName</Label>
+            <PropertyName>DirectoryName</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Extension</Label>
+            <PropertyName>Extension</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Length</Label>
+            <PropertyName>Length</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>SizeMiB</Label>
+            <PropertyName>SizeMiB</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Duration</Label>
+            <PropertyName>Duration</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>ContainerFormat</Label>
+            <PropertyName>ContainerFormat</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>MediaType</Label>
+            <PropertyName>MediaType</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>AudioStreamCount</Label>
+            <PropertyName>AudioStreamCount</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>AudioCodec</Label>
+            <PropertyName>AudioCodec</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>AudioBitRate</Label>
+            <PropertyName>AudioBitRate</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>AudioBitRateMode</Label>
+            <PropertyName>AudioBitRateMode</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Channels</Label>
+            <PropertyName>Channels</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>SamplingRate</Label>
+            <PropertyName>SamplingRate</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>ArtworkCount</Label>
+            <PropertyName>ArtworkCount</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Title</Label>
+            <PropertyName>Title</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Album</Label>
+            <PropertyName>Album</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Artist</Label>
+            <PropertyName>Artist</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>TrackNumber</Label>
+            <PropertyName>TrackNumber</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>TrackCount</Label>
+            <PropertyName>TrackCount</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Genre</Label>
+            <PropertyName>Genre</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>RecordedDate</Label>
+            <PropertyName>RecordedDate</PropertyName>
+          </ListItem>
+
+        </ListItems>
+      </ListEntry>
+
+
+      <!-- Image -->
+      <ListEntry>
+        <EntrySelectedBy>
+          <TypeName>GetMediaInfo.ImageMediaInfoResult.Extended</TypeName>
+        </EntrySelectedBy>
+
+        <ListItems>
+
+          <ListItem>
+            <Label>PSPath</Label>
+            <PropertyName>PSPath</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>LastWriteTime</Label>
+            <PropertyName>LastWriteTime</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Name</Label>
+            <PropertyName>Name</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>BaseName</Label>
+            <PropertyName>BaseName</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>DirectoryName</Label>
+            <PropertyName>DirectoryName</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Extension</Label>
+            <PropertyName>Extension</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Length</Label>
+            <PropertyName>Length</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>SizeMiB</Label>
+            <PropertyName>SizeMiB</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Duration</Label>
+            <PropertyName>Duration</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>ContainerFormat</Label>
+            <PropertyName>ContainerFormat</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>MediaType</Label>
+            <PropertyName>MediaType</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>ImageStreamCount</Label>
+            <PropertyName>ImageStreamCount</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>ImageFormat</Label>
+            <PropertyName>ImageFormat</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Width</Label>
+            <PropertyName>Width</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Height</Label>
+            <PropertyName>Height</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Resolution</Label>
+            <PropertyName>Resolution</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>BitDepth</Label>
+            <PropertyName>BitDepth</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>ColorSpace</Label>
+            <PropertyName>ColorSpace</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Title</Label>
+            <PropertyName>Title</PropertyName>
+          </ListItem>
+
+        </ListItems>
+      </ListEntry>
+
+
+      <!-- Unknown / default fallback -->
+      <ListEntry>
+        <ListItems>
+
+          <ListItem>
+            <Label>PSPath</Label>
+            <PropertyName>PSPath</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>LastWriteTime</Label>
+            <PropertyName>LastWriteTime</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Name</Label>
+            <PropertyName>Name</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>BaseName</Label>
+            <PropertyName>BaseName</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>DirectoryName</Label>
+            <PropertyName>DirectoryName</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Extension</Label>
+            <PropertyName>Extension</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Length</Label>
+            <PropertyName>Length</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>SizeMiB</Label>
+            <PropertyName>SizeMiB</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>Duration</Label>
+            <PropertyName>Duration</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>ContainerFormat</Label>
+            <PropertyName>ContainerFormat</PropertyName>
+          </ListItem>
+
+          <ListItem>
+            <Label>MediaType</Label>
+            <PropertyName>MediaType</PropertyName>
+          </ListItem>
+
+        </ListItems>
+      </ListEntry>
+
+    </ListEntries>
+  </ListControl>
+</View>
+
+
     <View>
       <Name>GetMediaInfo.VideoMediaInfoResult.Table</Name>
       <ViewSelectedBy>
@@ -12,7 +708,7 @@
           <TableColumnHeader><Label>Frame rate</Label></TableColumnHeader>
           <TableColumnHeader><Label>Resolution</Label></TableColumnHeader>
           <TableColumnHeader><Label>Duration</Label></TableColumnHeader>
-          <TableColumnHeader><Label>Video</Label></TableColumnHeader>
+          <TableColumnHeader><Label>VideoCodec</Label></TableColumnHeader>
           <TableColumnHeader><Label>Audio</Label></TableColumnHeader>
         </TableHeaders>
         <TableRowEntries>
@@ -52,10 +748,12 @@
           <TableColumnHeader><Label>Name</Label></TableColumnHeader>
           <TableColumnHeader><Label>Format</Label></TableColumnHeader>
           <TableColumnHeader><Label>Duration</Label></TableColumnHeader>
-          <TableColumnHeader><Label>Audio</Label></TableColumnHeader>
+          <TableColumnHeader><Label>AudioBitRate</Label></TableColumnHeader>
+          <TableColumnHeader><Label>SamplingRate</Label></TableColumnHeader>
           <TableColumnHeader><Label>Artist</Label></TableColumnHeader>
           <TableColumnHeader><Label>Album</Label></TableColumnHeader>
           <TableColumnHeader><Label>Track</Label></TableColumnHeader>
+
         </TableHeaders>
         <TableRowEntries>
           <TableRowEntry>
@@ -69,7 +767,8 @@
                   }
                 </ScriptBlock>
               </TableColumnItem>
-              <TableColumnItem><PropertyName>AudioCodec</PropertyName></TableColumnItem>
+              <TableColumnItem><PropertyName>AudioBitRate</PropertyName></TableColumnItem>
+              <TableColumnItem><PropertyName>SamplingRate</PropertyName></TableColumnItem>
               <TableColumnItem><PropertyName>Artist</PropertyName></TableColumnItem>
               <TableColumnItem><PropertyName>Album</PropertyName></TableColumnItem>
               <TableColumnItem>
@@ -116,7 +815,7 @@
       </TableControl>
     </View>
 
-    <View>
+    <!-- <View>
       <Name>GetMediaInfo.UnknownMediaInfoResult.Table</Name>
       <ViewSelectedBy>
         <TypeName>GetMediaInfo.UnknownMediaInfoResult</TypeName>
@@ -137,7 +836,7 @@
           </TableRowEntry>
         </TableRowEntries>
       </TableControl>
-    </View>
+    </View> -->
 
     <View>
       <Name>GetMediaInfo.VideoMediaInfoResult.Extended.Table</Name>
@@ -146,15 +845,16 @@
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>
-          <TableColumnHeader><Label>General</Label></TableColumnHeader>
-          <TableColumnHeader><Label>FullName</Label></TableColumnHeader>
+          
+          
+          
           <TableColumnHeader><Label>PSPath</Label></TableColumnHeader>
-          <TableColumnHeader><Label>File</Label></TableColumnHeader>
           <TableColumnHeader><Label>LastWriteTime</Label></TableColumnHeader>
           <TableColumnHeader><Label>Name</Label></TableColumnHeader>
           <TableColumnHeader><Label>BaseName</Label></TableColumnHeader>
           <TableColumnHeader><Label>DirectoryName</Label></TableColumnHeader>
           <TableColumnHeader><Label>Extension</Label></TableColumnHeader>
+          <TableColumnHeader><Label>Resolution</Label></TableColumnHeader>
           <TableColumnHeader><Label>Length</Label></TableColumnHeader>
           <TableColumnHeader><Label>SizeMiB</Label></TableColumnHeader>
           <TableColumnHeader><Label>Duration</Label></TableColumnHeader>
@@ -164,7 +864,6 @@
           <TableColumnHeader><Label>VideoCodec</Label></TableColumnHeader>
           <TableColumnHeader><Label>VideoWidth</Label></TableColumnHeader>
           <TableColumnHeader><Label>VideoHeight</Label></TableColumnHeader>
-          <TableColumnHeader><Label>Resolution</Label></TableColumnHeader>
           <TableColumnHeader><Label>FrameRateMode</Label></TableColumnHeader>
           <TableColumnHeader><Label>FrameRate</Label></TableColumnHeader>
           <TableColumnHeader><Label>VideoBitRate</Label></TableColumnHeader>
@@ -182,29 +881,32 @@
           <TableColumnHeader><Label>AudioBitRateMode</Label></TableColumnHeader>
           <TableColumnHeader><Label>TextStreamCount</Label></TableColumnHeader>
           <TableColumnHeader><Label>TextFormats</Label></TableColumnHeader>
+          
         </TableHeaders>
         <TableRowEntries>
           <TableRowEntry>
             <TableColumnItems>
-                <TableColumnItem><PropertyName>General</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>FullName</PropertyName></TableColumnItem>
+                
                 <TableColumnItem><PropertyName>PSPath</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>File</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>LastWriteTime</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>Name</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>BaseName</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>DirectoryName</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>Extension</PropertyName></TableColumnItem>
+                <TableColumnItem><PropertyName>Resolution</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>Length</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>SizeMiB</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>Duration</PropertyName></TableColumnItem>
+                <TableColumnItem><ScriptBlock>
+                  if ($null -ne $_.Duration) {
+                    $_.Duration.ToString('hh\:mm\:ss\.fff')
+                  }
+                </ScriptBlock></TableColumnItem>
                 <TableColumnItem><PropertyName>ContainerFormat</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>MediaType</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>VideoStreamCount</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>VideoCodec</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>VideoWidth</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>VideoHeight</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>Resolution</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>FrameRateMode</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>FrameRate</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>VideoBitRate</PropertyName></TableColumnItem>
@@ -222,6 +924,8 @@
                 <TableColumnItem><PropertyName>AudioBitRateMode</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>TextStreamCount</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>TextFormats</PropertyName></TableColumnItem>
+                
+                
             </TableColumnItems>
           </TableRowEntry>
         </TableRowEntries>
@@ -235,10 +939,8 @@
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>
-          <TableColumnHeader><Label>General</Label></TableColumnHeader>
-          <TableColumnHeader><Label>FullName</Label></TableColumnHeader>
+         
           <TableColumnHeader><Label>PSPath</Label></TableColumnHeader>
-          <TableColumnHeader><Label>File</Label></TableColumnHeader>
           <TableColumnHeader><Label>LastWriteTime</Label></TableColumnHeader>
           <TableColumnHeader><Label>Name</Label></TableColumnHeader>
           <TableColumnHeader><Label>BaseName</Label></TableColumnHeader>
@@ -263,14 +965,13 @@
           <TableColumnHeader><Label>TrackCount</Label></TableColumnHeader>
           <TableColumnHeader><Label>Genre</Label></TableColumnHeader>
           <TableColumnHeader><Label>RecordedDate</Label></TableColumnHeader>
+          
         </TableHeaders>
         <TableRowEntries>
           <TableRowEntry>
             <TableColumnItems>
-                <TableColumnItem><PropertyName>General</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>FullName</PropertyName></TableColumnItem>
+               
                 <TableColumnItem><PropertyName>PSPath</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>File</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>LastWriteTime</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>Name</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>BaseName</PropertyName></TableColumnItem>
@@ -278,7 +979,11 @@
                 <TableColumnItem><PropertyName>Extension</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>Length</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>SizeMiB</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>Duration</PropertyName></TableColumnItem>
+                <TableColumnItem><ScriptBlock>
+                  if ($null -ne $_.Duration) {
+                    $_.Duration.ToString('hh\:mm\:ss\.fff')
+                  }
+                </ScriptBlock></TableColumnItem>
                 <TableColumnItem><PropertyName>ContainerFormat</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>MediaType</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>AudioStreamCount</PropertyName></TableColumnItem>
@@ -295,6 +1000,7 @@
                 <TableColumnItem><PropertyName>TrackCount</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>Genre</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>RecordedDate</PropertyName></TableColumnItem>
+               
             </TableColumnItems>
           </TableRowEntry>
         </TableRowEntries>
@@ -308,10 +1014,8 @@
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>
-          <TableColumnHeader><Label>General</Label></TableColumnHeader>
-          <TableColumnHeader><Label>FullName</Label></TableColumnHeader>
+         
           <TableColumnHeader><Label>PSPath</Label></TableColumnHeader>
-          <TableColumnHeader><Label>File</Label></TableColumnHeader>
           <TableColumnHeader><Label>LastWriteTime</Label></TableColumnHeader>
           <TableColumnHeader><Label>Name</Label></TableColumnHeader>
           <TableColumnHeader><Label>BaseName</Label></TableColumnHeader>
@@ -330,14 +1034,13 @@
           <TableColumnHeader><Label>BitDepth</Label></TableColumnHeader>
           <TableColumnHeader><Label>ColorSpace</Label></TableColumnHeader>
           <TableColumnHeader><Label>Title</Label></TableColumnHeader>
+          
         </TableHeaders>
         <TableRowEntries>
           <TableRowEntry>
             <TableColumnItems>
-                <TableColumnItem><PropertyName>General</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>FullName</PropertyName></TableColumnItem>
+                
                 <TableColumnItem><PropertyName>PSPath</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>File</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>LastWriteTime</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>Name</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>BaseName</PropertyName></TableColumnItem>
@@ -345,7 +1048,11 @@
                 <TableColumnItem><PropertyName>Extension</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>Length</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>SizeMiB</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>Duration</PropertyName></TableColumnItem>
+                <TableColumnItem><ScriptBlock>
+                  if ($null -ne $_.Duration) {
+                    $_.Duration.ToString('hh\:mm\:ss\.fff')
+                  }
+                </ScriptBlock></TableColumnItem>
                 <TableColumnItem><PropertyName>ContainerFormat</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>MediaType</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>ImageStreamCount</PropertyName></TableColumnItem>
@@ -356,23 +1063,22 @@
                 <TableColumnItem><PropertyName>BitDepth</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>ColorSpace</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>Title</PropertyName></TableColumnItem>
+               
             </TableColumnItems>
           </TableRowEntry>
         </TableRowEntries>
       </TableControl>
     </View>
 
-    <View>
+    <!-- <View>
       <Name>GetMediaInfo.UnknownMediaInfoResult.Extended.Table</Name>
       <ViewSelectedBy>
         <TypeName>GetMediaInfo.UnknownMediaInfoResult.Extended</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>
-          <TableColumnHeader><Label>General</Label></TableColumnHeader>
-          <TableColumnHeader><Label>FullName</Label></TableColumnHeader>
+          
           <TableColumnHeader><Label>PSPath</Label></TableColumnHeader>
-          <TableColumnHeader><Label>File</Label></TableColumnHeader>
           <TableColumnHeader><Label>LastWriteTime</Label></TableColumnHeader>
           <TableColumnHeader><Label>Name</Label></TableColumnHeader>
           <TableColumnHeader><Label>BaseName</Label></TableColumnHeader>
@@ -380,17 +1086,16 @@
           <TableColumnHeader><Label>Extension</Label></TableColumnHeader>
           <TableColumnHeader><Label>Length</Label></TableColumnHeader>
           <TableColumnHeader><Label>SizeMiB</Label></TableColumnHeader>
-          <TableColumnHeader><Label>Duration</Label></TableColumnHeader>
+         
           <TableColumnHeader><Label>ContainerFormat</Label></TableColumnHeader>
           <TableColumnHeader><Label>MediaType</Label></TableColumnHeader>
+          
         </TableHeaders>
         <TableRowEntries>
           <TableRowEntry>
             <TableColumnItems>
-                <TableColumnItem><PropertyName>General</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>FullName</PropertyName></TableColumnItem>
+               
                 <TableColumnItem><PropertyName>PSPath</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>File</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>LastWriteTime</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>Name</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>BaseName</PropertyName></TableColumnItem>
@@ -398,14 +1103,15 @@
                 <TableColumnItem><PropertyName>Extension</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>Length</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>SizeMiB</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>Duration</PropertyName></TableColumnItem>
+                
                 <TableColumnItem><PropertyName>ContainerFormat</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>MediaType</PropertyName></TableColumnItem>
+                
             </TableColumnItems>
           </TableRowEntry>
         </TableRowEntries>
       </TableControl>
-    </View>
+    </View> -->
     <View>
       <Name>GetMediaInfo.VideoMediaInfoResult.List</Name>
      <ViewSelectedBy>
@@ -451,7 +1157,8 @@
                     $_.Duration.ToString('hh\:mm\:ss\.fff')
                   }
                 </ScriptBlock></ListItem>
-              <ListItem><Label>Audio</Label><PropertyName>AudioCodec</PropertyName></ListItem>
+              <ListItem><Label>AudioBitRate</Label><PropertyName>AudioBitRate</PropertyName></ListItem>
+              <ListItem><Label>SamplingRate</Label><PropertyName>SamplingRate</PropertyName></ListItem>
               <ListItem><Label>Artist</Label><PropertyName>Artist</PropertyName></ListItem>
               <ListItem><Label>Album</Label><PropertyName>Album</PropertyName></ListItem>
               <ListItem><Label>Track</Label><ScriptBlock>
@@ -489,7 +1196,7 @@
       </ListControl>
     </View>
 
-    <View>
+    <!-- <View>
       <Name>GetMediaInfo.UnknownMediaInfoResult.List</Name>
      <ViewSelectedBy>
        <TypeName>GetMediaInfo.UnknownMediaInfoResult</TypeName>
@@ -505,9 +1212,9 @@
           </ListEntry>
         </ListEntries>
       </ListControl>
-    </View>
+    </View> -->
 
-    <View>
+    <!-- <View>
       <Name>GetMediaInfo.VideoMediaInfoResult.Extended.List</Name>
      <ViewSelectedBy>
        <TypeName>GetMediaInfo.VideoMediaInfoResult.Extended</TypeName>
@@ -516,25 +1223,28 @@
         <ListEntries>
           <ListEntry>
             <ListItems>
-              <ListItem><Label>General</Label><PropertyName>General</PropertyName></ListItem>
-              <ListItem><Label>FullName</Label><PropertyName>FullName</PropertyName></ListItem>
+             
+              
               <ListItem><Label>PSPath</Label><PropertyName>PSPath</PropertyName></ListItem>
-              <ListItem><Label>File</Label><PropertyName>File</PropertyName></ListItem>
               <ListItem><Label>LastWriteTime</Label><PropertyName>LastWriteTime</PropertyName></ListItem>
               <ListItem><Label>Name</Label><PropertyName>Name</PropertyName></ListItem>
               <ListItem><Label>BaseName</Label><PropertyName>BaseName</PropertyName></ListItem>
               <ListItem><Label>DirectoryName</Label><PropertyName>DirectoryName</PropertyName></ListItem>
               <ListItem><Label>Extension</Label><PropertyName>Extension</PropertyName></ListItem>
+               <ListItem><Label>Resolution</Label><PropertyName>Resolution</PropertyName></ListItem>
               <ListItem><Label>Length</Label><PropertyName>Length</PropertyName></ListItem>
               <ListItem><Label>SizeMiB</Label><PropertyName>SizeMiB</PropertyName></ListItem>
-              <ListItem><Label>Duration</Label><PropertyName>Duration</PropertyName></ListItem>
+              <ListItem><Label>Duration</Label><ScriptBlock>
+                  if ($null -ne $_.Duration) {
+                    $_.Duration.ToString('hh\:mm\:ss\.fff')
+                  }
+                </ScriptBlock></ListItem>
               <ListItem><Label>ContainerFormat</Label><PropertyName>ContainerFormat</PropertyName></ListItem>
               <ListItem><Label>MediaType</Label><PropertyName>MediaType</PropertyName></ListItem>
               <ListItem><Label>VideoStreamCount</Label><PropertyName>VideoStreamCount</PropertyName></ListItem>
               <ListItem><Label>VideoCodec</Label><PropertyName>VideoCodec</PropertyName></ListItem>
               <ListItem><Label>VideoWidth</Label><PropertyName>VideoWidth</PropertyName></ListItem>
               <ListItem><Label>VideoHeight</Label><PropertyName>VideoHeight</PropertyName></ListItem>
-              <ListItem><Label>Resolution</Label><PropertyName>Resolution</PropertyName></ListItem>
               <ListItem><Label>FrameRateMode</Label><PropertyName>FrameRateMode</PropertyName></ListItem>
               <ListItem><Label>FrameRate</Label><PropertyName>FrameRate</PropertyName></ListItem>
               <ListItem><Label>VideoBitRate</Label><PropertyName>VideoBitRate</PropertyName></ListItem>
@@ -552,13 +1262,14 @@
               <ListItem><Label>AudioBitRateMode</Label><PropertyName>AudioBitRateMode</PropertyName></ListItem>
               <ListItem><Label>TextStreamCount</Label><PropertyName>TextStreamCount</PropertyName></ListItem>
               <ListItem><Label>TextFormats</Label><PropertyName>TextFormats</PropertyName></ListItem>
+             
             </ListItems>
           </ListEntry>
         </ListEntries>
       </ListControl>
-    </View>
+    </View> -->
 
-    <View>
+    <!-- <View>
       <Name>GetMediaInfo.AudioMediaInfoResult.Extended.List</Name>
      <ViewSelectedBy>
        <TypeName>GetMediaInfo.AudioMediaInfoResult.Extended</TypeName>
@@ -567,10 +1278,9 @@
         <ListEntries>
           <ListEntry>
             <ListItems>
-              <ListItem><Label>General</Label><PropertyName>General</PropertyName></ListItem>
-              <ListItem><Label>FullName</Label><PropertyName>FullName</PropertyName></ListItem>
+             
+              
               <ListItem><Label>PSPath</Label><PropertyName>PSPath</PropertyName></ListItem>
-              <ListItem><Label>File</Label><PropertyName>File</PropertyName></ListItem>
               <ListItem><Label>LastWriteTime</Label><PropertyName>LastWriteTime</PropertyName></ListItem>
               <ListItem><Label>Name</Label><PropertyName>Name</PropertyName></ListItem>
               <ListItem><Label>BaseName</Label><PropertyName>BaseName</PropertyName></ListItem>
@@ -578,7 +1288,11 @@
               <ListItem><Label>Extension</Label><PropertyName>Extension</PropertyName></ListItem>
               <ListItem><Label>Length</Label><PropertyName>Length</PropertyName></ListItem>
               <ListItem><Label>SizeMiB</Label><PropertyName>SizeMiB</PropertyName></ListItem>
-              <ListItem><Label>Duration</Label><PropertyName>Duration</PropertyName></ListItem>
+              <ListItem><Label>Duration</Label><ScriptBlock>
+                  if ($null -ne $_.Duration) {
+                    $_.Duration.ToString('hh\:mm\:ss\.fff')
+                  }
+                </ScriptBlock></ListItem>
               <ListItem><Label>ContainerFormat</Label><PropertyName>ContainerFormat</PropertyName></ListItem>
               <ListItem><Label>MediaType</Label><PropertyName>MediaType</PropertyName></ListItem>
               <ListItem><Label>AudioStreamCount</Label><PropertyName>AudioStreamCount</PropertyName></ListItem>
@@ -599,9 +1313,9 @@
           </ListEntry>
         </ListEntries>
       </ListControl>
-    </View>
+    </View> -->
 
-    <View>
+    <!-- <View>
       <Name>GetMediaInfo.ImageMediaInfoResult.Extended.List</Name>
      <ViewSelectedBy>
        <TypeName>GetMediaInfo.ImageMediaInfoResult.Extended</TypeName>
@@ -610,10 +1324,9 @@
         <ListEntries>
           <ListEntry>
             <ListItems>
-              <ListItem><Label>General</Label><PropertyName>General</PropertyName></ListItem>
-              <ListItem><Label>FullName</Label><PropertyName>FullName</PropertyName></ListItem>
+              
+              
               <ListItem><Label>PSPath</Label><PropertyName>PSPath</PropertyName></ListItem>
-              <ListItem><Label>File</Label><PropertyName>File</PropertyName></ListItem>
               <ListItem><Label>LastWriteTime</Label><PropertyName>LastWriteTime</PropertyName></ListItem>
               <ListItem><Label>Name</Label><PropertyName>Name</PropertyName></ListItem>
               <ListItem><Label>BaseName</Label><PropertyName>BaseName</PropertyName></ListItem>
@@ -621,7 +1334,6 @@
               <ListItem><Label>Extension</Label><PropertyName>Extension</PropertyName></ListItem>
               <ListItem><Label>Length</Label><PropertyName>Length</PropertyName></ListItem>
               <ListItem><Label>SizeMiB</Label><PropertyName>SizeMiB</PropertyName></ListItem>
-              <ListItem><Label>Duration</Label><PropertyName>Duration</PropertyName></ListItem>
               <ListItem><Label>ContainerFormat</Label><PropertyName>ContainerFormat</PropertyName></ListItem>
               <ListItem><Label>MediaType</Label><PropertyName>MediaType</PropertyName></ListItem>
               <ListItem><Label>ImageStreamCount</Label><PropertyName>ImageStreamCount</PropertyName></ListItem>
@@ -634,11 +1346,12 @@
               <ListItem><Label>Title</Label><PropertyName>Title</PropertyName></ListItem>
             </ListItems>
           </ListEntry>
+              
         </ListEntries>
       </ListControl>
-    </View>
+    </View> -->
 
-    <View>
+    <!-- <View>
       <Name>GetMediaInfo.UnknownMediaInfoResult.Extended.List</Name>
      <ViewSelectedBy>
        <TypeName>GetMediaInfo.UnknownMediaInfoResult.Extended</TypeName>
@@ -647,10 +1360,9 @@
         <ListEntries>
           <ListEntry>
             <ListItems>
-              <ListItem><Label>General</Label><PropertyName>General</PropertyName></ListItem>
-              <ListItem><Label>FullName</Label><PropertyName>FullName</PropertyName></ListItem>
+              
+             
               <ListItem><Label>PSPath</Label><PropertyName>PSPath</PropertyName></ListItem>
-              <ListItem><Label>File</Label><PropertyName>File</PropertyName></ListItem>
               <ListItem><Label>LastWriteTime</Label><PropertyName>LastWriteTime</PropertyName></ListItem>
               <ListItem><Label>Name</Label><PropertyName>Name</PropertyName></ListItem>
               <ListItem><Label>BaseName</Label><PropertyName>BaseName</PropertyName></ListItem>
@@ -658,13 +1370,18 @@
               <ListItem><Label>Extension</Label><PropertyName>Extension</PropertyName></ListItem>
               <ListItem><Label>Length</Label><PropertyName>Length</PropertyName></ListItem>
               <ListItem><Label>SizeMiB</Label><PropertyName>SizeMiB</PropertyName></ListItem>
-              <ListItem><Label>Duration</Label><PropertyName>Duration</PropertyName></ListItem>
               <ListItem><Label>ContainerFormat</Label><PropertyName>ContainerFormat</PropertyName></ListItem>
               <ListItem><Label>MediaType</Label><PropertyName>MediaType</PropertyName></ListItem>
+             
             </ListItems>
           </ListEntry>
         </ListEntries>
       </ListControl>
-    </View>
+    </View> -->
+
+
+
+
+
   </ViewDefinitions>
 </Configuration>

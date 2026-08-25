@@ -88,18 +88,34 @@ public sealed class GetMediaFileInfoCommand : PSCmdlet
                 string resolvedPath = SessionState.Path
                     .GetUnresolvedProviderPathFromPSPath(
                         path,
-                        out ProviderInfo literalPathProvider,
+                        out ProviderInfo literalParameterProvider,
                         out _);
 
-                if (IsFileSystemProvider(literalPathProvider))
+                if (IsFileSystemProvider(literalParameterProvider))
                 {
                     ProcessFile(resolvedPath, path);
                 }
                 else
                 {
-                    WriteNonFileSystemProviderError(path, literalPathProvider);
+                    WriteNonFileSystemProviderError(path, literalParameterProvider);
                 }
 
+                return;
+            }
+
+            // Prefer an exact filesystem match before asking PowerShell to
+            // expand wildcards. This lets ordinary paths containing wildcard
+            // metacharacters (such as release tags in square brackets) work
+            // without requiring callers to select -LiteralPath explicitly.
+            string literalPath = SessionState.Path
+                .GetUnresolvedProviderPathFromPSPath(
+                    path,
+                    out ProviderInfo literalPathProvider,
+                    out _);
+
+            if (IsFileSystemProvider(literalPathProvider) && File.Exists(literalPath))
+            {
+                ProcessFile(literalPath, path);
                 return;
             }
 
