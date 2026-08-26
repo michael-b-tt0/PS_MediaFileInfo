@@ -790,7 +790,7 @@
          <ScriptBlock>
     $parts = @()
 
-    if ($_.PSObject.TypeNames -contains 'GetMediaInfo.VideoMediaInfoResult') {
+    if ($_.VideoCodec) {
       if ($_.Resolution) {
         $parts += $_.Resolution
       }
@@ -799,7 +799,7 @@
         $parts += ('{0:0.###} fps' -f $_.FrameRate)
       }
     }
-    elseif ($_.PSObject.TypeNames -contains 'GetMediaInfo.AudioMediaInfoResult') {
+    elseif ($_.AudioCodec) {
       if ($_.Artist) {
         $parts += $_.Artist
       }
@@ -809,15 +809,10 @@
       }
 
       if ($null -ne $_.TrackNumber) {
-        if ($null -ne $_.TrackCount) {
-          $parts += ('Track {0}/{1}' -f $_.TrackNumber, $_.TrackCount)
-        }
-        else {
-          $parts += ('Track {0}' -f $_.TrackNumber)
-        }
+        $parts += ('Track {0}' -f $_.TrackNumber)
       }
     }
-    elseif ($_.PSObject.TypeNames -contains 'GetMediaInfo.ImageMediaInfoResult') {
+    elseif ($_.ImageFormat) {
       if ($_.Resolution) {
         $parts += $_.Resolution
       }
@@ -845,10 +840,10 @@
       <!-- Codec -->
       <TableColumnItem>
          <ScriptBlock>
-    if ($_.PSObject.TypeNames -contains 'GetMediaInfo.VideoMediaInfoResult') {
+     if ($_.VideoCodec) {
       $_.VideoCodec
     }
-    elseif ($_.PSObject.TypeNames -contains 'GetMediaInfo.AudioMediaInfoResult') {
+    elseif ($_.AudioCodec) {
       $_.AudioCodec
     }
   </ScriptBlock>
@@ -1028,6 +1023,8 @@
   <TableControl>
 
     <TableHeaders>
+
+      <!-- Common -->
       <TableColumnHeader><Label>PSPath</Label></TableColumnHeader>
       <TableColumnHeader><Label>LastWriteTime</Label></TableColumnHeader>
       <TableColumnHeader><Label>Name</Label></TableColumnHeader>
@@ -1040,8 +1037,10 @@
       <TableColumnHeader><Label>ContainerFormat</Label></TableColumnHeader>
       <TableColumnHeader><Label>MediaType</Label></TableColumnHeader>
 
+      <!-- Shared Video / Image -->
       <TableColumnHeader><Label>Resolution</Label></TableColumnHeader>
 
+      <!-- Video -->
       <TableColumnHeader><Label>VideoStreamCount</Label></TableColumnHeader>
       <TableColumnHeader><Label>VideoCodec</Label></TableColumnHeader>
       <TableColumnHeader><Label>VideoWidth</Label></TableColumnHeader>
@@ -1058,6 +1057,7 @@
       <TableColumnHeader><Label>TransferCharacteristics</Label></TableColumnHeader>
       <TableColumnHeader><Label>MatrixCoefficients</Label></TableColumnHeader>
 
+      <!-- Audio, including audio streams attached to video -->
       <TableColumnHeader><Label>AudioStreamCount</Label></TableColumnHeader>
       <TableColumnHeader><Label>AudioCodec</Label></TableColumnHeader>
       <TableColumnHeader><Label>AudioBitRate</Label></TableColumnHeader>
@@ -1066,6 +1066,7 @@
       <TableColumnHeader><Label>SamplingRate</Label></TableColumnHeader>
       <TableColumnHeader><Label>ArtworkCount</Label></TableColumnHeader>
 
+      <!-- Metadata -->
       <TableColumnHeader><Label>Title</Label></TableColumnHeader>
       <TableColumnHeader><Label>Album</Label></TableColumnHeader>
       <TableColumnHeader><Label>Artist</Label></TableColumnHeader>
@@ -1074,37 +1075,58 @@
       <TableColumnHeader><Label>Genre</Label></TableColumnHeader>
       <TableColumnHeader><Label>RecordedDate</Label></TableColumnHeader>
 
+      <!-- Image -->
       <TableColumnHeader><Label>ImageStreamCount</Label></TableColumnHeader>
       <TableColumnHeader><Label>ImageFormat</Label></TableColumnHeader>
       <TableColumnHeader><Label>Width</Label></TableColumnHeader>
       <TableColumnHeader><Label>Height</Label></TableColumnHeader>
       <TableColumnHeader><Label>BitDepth</Label></TableColumnHeader>
 
+      <!-- Text -->
       <TableColumnHeader><Label>TextStreamCount</Label></TableColumnHeader>
       <TableColumnHeader><Label>TextFormats</Label></TableColumnHeader>
+
     </TableHeaders>
 
 
     <TableRowEntries>
 
-      <!-- ========================================================= -->
-      <!-- VIDEO -->
-      <!-- ========================================================= -->
-
+      <!--
+        One row schema for every Extended MediaInfoResult type.
+        No EntrySelectedBy.
+      -->
       <TableRowEntry>
-        <EntrySelectedBy>
-          <TypeName>GetMediaInfo.VideoMediaInfoResult.Extended</TypeName>
-        </EntrySelectedBy>
 
         <TableColumnItems>
 
-          <TableColumnItem><PropertyName>PSPath</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>LastWriteTime</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>Name</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>BaseName</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>DirectoryName</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>Extension</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>Length</PropertyName></TableColumnItem>
+          <!-- Common -->
+          <TableColumnItem>
+            <PropertyName>PSPath</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>LastWriteTime</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>Name</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>BaseName</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>DirectoryName</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>Extension</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>Length</PropertyName>
+          </TableColumnItem>
 
           <TableColumnItem>
             <ScriptBlock>
@@ -1122,881 +1144,185 @@
             </ScriptBlock>
           </TableColumnItem>
 
-          <TableColumnItem><PropertyName>ContainerFormat</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>MediaType</PropertyName></TableColumnItem>
-
-          <TableColumnItem><PropertyName>Resolution</PropertyName></TableColumnItem>
-
-          <TableColumnItem><PropertyName>VideoStreamCount</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>VideoCodec</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>VideoWidth</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>VideoHeight</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>FrameRateMode</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>FrameRate</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>VideoBitRate</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>DisplayAspectRatio</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>FormatProfile</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>ScanType</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>ColorSpace</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>ColorRange</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>ColorPrimaries</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>TransferCharacteristics</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>MatrixCoefficients</PropertyName></TableColumnItem>
-
-          <TableColumnItem><PropertyName>AudioStreamCount</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>AudioCodec</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>AudioBitRate</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>AudioBitRateMode</PropertyName></TableColumnItem>
-
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-
-          <TableColumnItem><PropertyName>TextStreamCount</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>TextFormats</PropertyName></TableColumnItem>
-
-        </TableColumnItems>
-      </TableRowEntry>
-
-
-      <!-- ========================================================= -->
-      <!-- AUDIO -->
-      <!-- ========================================================= -->
-
-      <TableRowEntry>
-        <EntrySelectedBy>
-          <TypeName>GetMediaInfo.AudioMediaInfoResult.Extended</TypeName>
-        </EntrySelectedBy>
-
-        <TableColumnItems>
-
-          <TableColumnItem><PropertyName>PSPath</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>LastWriteTime</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>Name</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>BaseName</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>DirectoryName</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>Extension</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>Length</PropertyName></TableColumnItem>
-
           <TableColumnItem>
-            <ScriptBlock>
-              if ($null -ne $_.SizeMiB) {
-                '{0:F3}' -f $_.SizeMiB
-              }
-            </ScriptBlock>
+            <PropertyName>ContainerFormat</PropertyName>
           </TableColumnItem>
 
           <TableColumnItem>
-            <ScriptBlock>
-              if ($null -ne $_.Duration) {
-                $_.Duration.ToString('hh\:mm\:ss\.fff')
-              }
-            </ScriptBlock>
+            <PropertyName>MediaType</PropertyName>
           </TableColumnItem>
 
-          <TableColumnItem><PropertyName>ContainerFormat</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>MediaType</PropertyName></TableColumnItem>
 
-          <!-- Resolution -->
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <!-- Video / Image -->
+          <TableColumnItem>
+            <PropertyName>Resolution</PropertyName>
+          </TableColumnItem>
+
 
           <!-- Video -->
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem>
+            <PropertyName>VideoStreamCount</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>VideoCodec</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>VideoWidth</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>VideoHeight</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>FrameRateMode</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>FrameRate</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>VideoBitRate</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>DisplayAspectRatio</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>FormatProfile</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>ScanType</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>ColorSpace</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>ColorRange</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>ColorPrimaries</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>TransferCharacteristics</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>MatrixCoefficients</PropertyName>
+          </TableColumnItem>
+
 
           <!-- Audio -->
-          <TableColumnItem><PropertyName>AudioStreamCount</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>AudioCodec</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>AudioBitRate</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>AudioBitRateMode</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>Channels</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>SamplingRate</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>ArtworkCount</PropertyName></TableColumnItem>
+          <TableColumnItem>
+            <PropertyName>AudioStreamCount</PropertyName>
+          </TableColumnItem>
 
-          <!-- Tags -->
-          <TableColumnItem><PropertyName>Title</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>Album</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>Artist</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>TrackNumber</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>TrackCount</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>Genre</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>RecordedDate</PropertyName></TableColumnItem>
+          <TableColumnItem>
+            <PropertyName>AudioCodec</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>AudioBitRate</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>AudioBitRateMode</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>Channels</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>SamplingRate</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>ArtworkCount</PropertyName>
+          </TableColumnItem>
+
+
+          <!-- Metadata -->
+          <TableColumnItem>
+            <PropertyName>Title</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>Album</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>Artist</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>TrackNumber</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>TrackCount</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>Genre</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>RecordedDate</PropertyName>
+          </TableColumnItem>
+
 
           <!-- Image -->
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem>
+            <PropertyName>ImageStreamCount</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>ImageFormat</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>Width</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>Height</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>BitDepth</PropertyName>
+          </TableColumnItem>
+
 
           <!-- Text -->
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem>
+            <PropertyName>TextStreamCount</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>TextFormats</PropertyName>
+          </TableColumnItem>
 
         </TableColumnItems>
-      </TableRowEntry>
 
-
-      <!-- ========================================================= -->
-      <!-- IMAGE -->
-      <!-- ========================================================= -->
-
-      <TableRowEntry>
-        <EntrySelectedBy>
-          <TypeName>GetMediaInfo.ImageMediaInfoResult.Extended</TypeName>
-        </EntrySelectedBy>
-
-        <TableColumnItems>
-
-          <TableColumnItem><PropertyName>PSPath</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>LastWriteTime</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>Name</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>BaseName</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>DirectoryName</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>Extension</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>Length</PropertyName></TableColumnItem>
-
-          <TableColumnItem>
-            <ScriptBlock>
-              if ($null -ne $_.SizeMiB) {
-                '{0:F3}' -f $_.SizeMiB
-              }
-            </ScriptBlock>
-          </TableColumnItem>
-
-          <TableColumnItem>
-            <ScriptBlock>
-              if ($null -ne $_.Duration) {
-                $_.Duration.ToString('hh\:mm\:ss\.fff')
-              }
-            </ScriptBlock>
-          </TableColumnItem>
-
-          <TableColumnItem><PropertyName>ContainerFormat</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>MediaType</PropertyName></TableColumnItem>
-
-          <TableColumnItem><PropertyName>Resolution</PropertyName></TableColumnItem>
-
-          <!-- Video -->
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-
-          <TableColumnItem><PropertyName>ColorSpace</PropertyName></TableColumnItem>
-
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-
-          <!-- Audio -->
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-
-          <!-- Tags -->
-          <TableColumnItem><PropertyName>Title</PropertyName></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-
-          <!-- Image -->
-          <TableColumnItem><PropertyName>ImageStreamCount</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>ImageFormat</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>Width</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>Height</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>BitDepth</PropertyName></TableColumnItem>
-
-          <!-- Text -->
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-
-        </TableColumnItems>
-      </TableRowEntry>
-
-
-      <!-- ========================================================= -->
-      <!-- UNKNOWN / REQUIRED DEFAULT -->
-      <!-- ========================================================= -->
-
-      <TableRowEntry>
-        <TableColumnItems>
-
-          <TableColumnItem><PropertyName>PSPath</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>LastWriteTime</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>Name</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>BaseName</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>DirectoryName</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>Extension</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>Length</PropertyName></TableColumnItem>
-
-          <TableColumnItem>
-            <ScriptBlock>
-              if ($null -ne $_.SizeMiB) {
-                '{0:F3}' -f $_.SizeMiB
-              }
-            </ScriptBlock>
-          </TableColumnItem>
-
-          <TableColumnItem>
-            <ScriptBlock>
-              if ($null -ne $_.Duration) {
-                $_.Duration.ToString('hh\:mm\:ss\.fff')
-              }
-            </ScriptBlock>
-          </TableColumnItem>
-
-          <TableColumnItem><PropertyName>ContainerFormat</PropertyName></TableColumnItem>
-          <TableColumnItem><PropertyName>MediaType</PropertyName></TableColumnItem>
-
-          <!-- Remaining 37 subtype columns -->
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
-
-        </TableColumnItems>
       </TableRowEntry>
 
     </TableRowEntries>
+
   </TableControl>
 </View>
 
 
-    <!-- <View>
-      <Name>GetMediaInfo.VideoMediaInfoResult.Extended.Table</Name>
-      
-      <ViewSelectedBy>
-        <TypeName>GetMediaInfo.VideoMediaInfoResult.Extended</TypeName>
-      </ViewSelectedBy>
-      <TableControl>
-        <TableHeaders>
-          
-          
-          
-          <TableColumnHeader><Label>PSPath</Label></TableColumnHeader>
-          <TableColumnHeader><Label>LastWriteTime</Label></TableColumnHeader>
-          <TableColumnHeader><Label>Name</Label></TableColumnHeader>
-          <TableColumnHeader><Label>BaseName</Label></TableColumnHeader>
-          <TableColumnHeader><Label>DirectoryName</Label></TableColumnHeader>
-          <TableColumnHeader><Label>Extension</Label></TableColumnHeader>
-          <TableColumnHeader><Label>Resolution</Label></TableColumnHeader>
-          <TableColumnHeader><Label>Length</Label></TableColumnHeader>
-          <TableColumnHeader><Label>SizeMiB</Label></TableColumnHeader>
-          <TableColumnHeader><Label>Duration</Label></TableColumnHeader>
-          <TableColumnHeader><Label>ContainerFormat</Label></TableColumnHeader>
-          <TableColumnHeader><Label>MediaType</Label></TableColumnHeader>
-          <TableColumnHeader><Label>VideoStreamCount</Label></TableColumnHeader>
-          <TableColumnHeader><Label>VideoCodec</Label></TableColumnHeader>
-          <TableColumnHeader><Label>VideoWidth</Label></TableColumnHeader>
-          <TableColumnHeader><Label>VideoHeight</Label></TableColumnHeader>
-          <TableColumnHeader><Label>FrameRateMode</Label></TableColumnHeader>
-          <TableColumnHeader><Label>FrameRate</Label></TableColumnHeader>
-          <TableColumnHeader><Label>VideoBitRate</Label></TableColumnHeader>
-          <TableColumnHeader><Label>DisplayAspectRatio</Label></TableColumnHeader>
-          <TableColumnHeader><Label>FormatProfile</Label></TableColumnHeader>
-          <TableColumnHeader><Label>ScanType</Label></TableColumnHeader>
-          <TableColumnHeader><Label>ColorSpace</Label></TableColumnHeader>
-          <TableColumnHeader><Label>ColorRange</Label></TableColumnHeader>
-          <TableColumnHeader><Label>ColorPrimaries</Label></TableColumnHeader>
-          <TableColumnHeader><Label>TransferCharacteristics</Label></TableColumnHeader>
-          <TableColumnHeader><Label>MatrixCoefficients</Label></TableColumnHeader>
-          <TableColumnHeader><Label>AudioStreamCount</Label></TableColumnHeader>
-          <TableColumnHeader><Label>AudioCodec</Label></TableColumnHeader>
-          <TableColumnHeader><Label>AudioBitRate</Label></TableColumnHeader>
-          <TableColumnHeader><Label>AudioBitRateMode</Label></TableColumnHeader>
-          <TableColumnHeader><Label>TextStreamCount</Label></TableColumnHeader>
-          <TableColumnHeader><Label>TextFormats</Label></TableColumnHeader>
-          
-        </TableHeaders>
-        <TableRowEntries>
-          <TableRowEntry>
-            <TableColumnItems>
-                
-                <TableColumnItem><PropertyName>PSPath</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>LastWriteTime</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>Name</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>BaseName</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>DirectoryName</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>Extension</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>Resolution</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>Length</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>SizeMiB</PropertyName></TableColumnItem>
-                <TableColumnItem><ScriptBlock>
-                  if ($null -ne $_.Duration) {
-                    $_.Duration.ToString('hh\:mm\:ss\.fff')
-                  }
-                </ScriptBlock></TableColumnItem>
-                <TableColumnItem><PropertyName>ContainerFormat</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>MediaType</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>VideoStreamCount</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>VideoCodec</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>VideoWidth</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>VideoHeight</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>FrameRateMode</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>FrameRate</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>VideoBitRate</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>DisplayAspectRatio</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>FormatProfile</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>ScanType</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>ColorSpace</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>ColorRange</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>ColorPrimaries</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>TransferCharacteristics</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>MatrixCoefficients</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>AudioStreamCount</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>AudioCodec</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>AudioBitRate</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>AudioBitRateMode</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>TextStreamCount</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>TextFormats</PropertyName></TableColumnItem>
-                
-                
-            </TableColumnItems>
-          </TableRowEntry>
-        </TableRowEntries>
-      </TableControl>
-    </View> -->
-
-    <!-- <View>
-      <Name>GetMediaInfo.AudioMediaInfoResult.Extended.Table</Name>
-      
-      <ViewSelectedBy>
-        <TypeName>GetMediaInfo.AudioMediaInfoResult.Extended</TypeName>
-      </ViewSelectedBy>
-      <TableControl>
-        <TableHeaders>
-         
-          <TableColumnHeader><Label>PSPath</Label></TableColumnHeader>
-          <TableColumnHeader><Label>LastWriteTime</Label></TableColumnHeader>
-          <TableColumnHeader><Label>Name</Label></TableColumnHeader>
-          <TableColumnHeader><Label>BaseName</Label></TableColumnHeader>
-          <TableColumnHeader><Label>DirectoryName</Label></TableColumnHeader>
-          <TableColumnHeader><Label>Extension</Label></TableColumnHeader>
-          <TableColumnHeader><Label>Length</Label></TableColumnHeader>
-          <TableColumnHeader><Label>SizeMiB</Label></TableColumnHeader>
-          <TableColumnHeader><Label>Duration</Label></TableColumnHeader>
-          <TableColumnHeader><Label>ContainerFormat</Label></TableColumnHeader>
-          <TableColumnHeader><Label>MediaType</Label></TableColumnHeader>
-          <TableColumnHeader><Label>AudioStreamCount</Label></TableColumnHeader>
-          <TableColumnHeader><Label>AudioCodec</Label></TableColumnHeader>
-          <TableColumnHeader><Label>AudioBitRate</Label></TableColumnHeader>
-          <TableColumnHeader><Label>AudioBitRateMode</Label></TableColumnHeader>
-          <TableColumnHeader><Label>Channels</Label></TableColumnHeader>
-          <TableColumnHeader><Label>SamplingRate</Label></TableColumnHeader>
-          <TableColumnHeader><Label>ArtworkCount</Label></TableColumnHeader>
-          <TableColumnHeader><Label>Title</Label></TableColumnHeader>
-          <TableColumnHeader><Label>Album</Label></TableColumnHeader>
-          <TableColumnHeader><Label>Artist</Label></TableColumnHeader>
-          <TableColumnHeader><Label>TrackNumber</Label></TableColumnHeader>
-          <TableColumnHeader><Label>TrackCount</Label></TableColumnHeader>
-          <TableColumnHeader><Label>Genre</Label></TableColumnHeader>
-          <TableColumnHeader><Label>RecordedDate</Label></TableColumnHeader>
-          
-        </TableHeaders>
-        <TableRowEntries>
-          <TableRowEntry>
-            <TableColumnItems>
-               
-                <TableColumnItem><PropertyName>PSPath</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>LastWriteTime</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>Name</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>BaseName</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>DirectoryName</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>Extension</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>Length</PropertyName></TableColumnItem>
-                <TableColumnItem><ScriptBlock>
-  if ($null -ne $_.SizeMiB) {
-    '{0:F3}' -f $_.SizeMiB
-  }
-</ScriptBlock></TableColumnItem>
-                <TableColumnItem><ScriptBlock>
-                  if ($null -ne $_.Duration) {
-                    $_.Duration.ToString('hh\:mm\:ss\.fff')
-                  }
-                </ScriptBlock></TableColumnItem>
-                <TableColumnItem><PropertyName>ContainerFormat</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>MediaType</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>AudioStreamCount</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>AudioCodec</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>AudioBitRate</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>AudioBitRateMode</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>Channels</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>SamplingRate</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>ArtworkCount</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>Title</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>Album</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>Artist</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>TrackNumber</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>TrackCount</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>Genre</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>RecordedDate</PropertyName></TableColumnItem>
-               
-            </TableColumnItems>
-          </TableRowEntry>
-        </TableRowEntries>
-      </TableControl>
-    </View> -->
-
-    <!-- <View>
-      <Name>GetMediaInfo.ImageMediaInfoResult.Extended.Table</Name>
-      
-      <ViewSelectedBy>
-        <TypeName>GetMediaInfo.ImageMediaInfoResult.Extended</TypeName>
-      </ViewSelectedBy>
-      <TableControl>
-        <TableHeaders>
-         
-          <TableColumnHeader><Label>PSPath</Label></TableColumnHeader>
-          <TableColumnHeader><Label>LastWriteTime</Label></TableColumnHeader>
-          <TableColumnHeader><Label>Name</Label></TableColumnHeader>
-          <TableColumnHeader><Label>BaseName</Label></TableColumnHeader>
-          <TableColumnHeader><Label>DirectoryName</Label></TableColumnHeader>
-          <TableColumnHeader><Label>Extension</Label></TableColumnHeader>
-          <TableColumnHeader><Label>Length</Label></TableColumnHeader>
-          <TableColumnHeader><Label>SizeMiB</Label></TableColumnHeader>
-          <TableColumnHeader><Label>Duration</Label></TableColumnHeader>
-          <TableColumnHeader><Label>ContainerFormat</Label></TableColumnHeader>
-          <TableColumnHeader><Label>MediaType</Label></TableColumnHeader>
-          <TableColumnHeader><Label>ImageStreamCount</Label></TableColumnHeader>
-          <TableColumnHeader><Label>ImageFormat</Label></TableColumnHeader>
-          <TableColumnHeader><Label>Width</Label></TableColumnHeader>
-          <TableColumnHeader><Label>Height</Label></TableColumnHeader>
-          <TableColumnHeader><Label>Resolution</Label></TableColumnHeader>
-          <TableColumnHeader><Label>BitDepth</Label></TableColumnHeader>
-          <TableColumnHeader><Label>ColorSpace</Label></TableColumnHeader>
-          <TableColumnHeader><Label>Title</Label></TableColumnHeader>
-          
-        </TableHeaders>
-        <TableRowEntries>
-          <TableRowEntry>
-            <TableColumnItems>
-                
-                <TableColumnItem><PropertyName>PSPath</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>LastWriteTime</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>Name</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>BaseName</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>DirectoryName</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>Extension</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>Length</PropertyName></TableColumnItem>
-                <TableColumnItem><ScriptBlock>
-                  if ($null -ne $_.SizeMiB) {
-                    '{0:F3}' -f $_.SizeMiB
-                  }
-                </ScriptBlock></TableColumnItem>
-                <TableColumnItem><ScriptBlock>
-                  if ($null -ne $_.Duration) {
-                    $_.Duration.ToString('hh\:mm\:ss\.fff')
-                  }
-                </ScriptBlock></TableColumnItem>
-                <TableColumnItem><PropertyName>ContainerFormat</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>MediaType</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>ImageStreamCount</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>ImageFormat</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>Width</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>Height</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>Resolution</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>BitDepth</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>ColorSpace</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>Title</PropertyName></TableColumnItem>
-               
-            </TableColumnItems>
-          </TableRowEntry>
-        </TableRowEntries>
-      </TableControl>
-    </View> -->
-
-    <!-- <View>
-      <Name>GetMediaInfo.UnknownMediaInfoResult.Extended.Table</Name>
-      
-      <ViewSelectedBy>
-        <TypeName>GetMediaInfo.UnknownMediaInfoResult.Extended</TypeName>
-      </ViewSelectedBy>
-      <TableControl>
-        <TableHeaders>
-          
-          <TableColumnHeader><Label>PSPath</Label></TableColumnHeader>
-          <TableColumnHeader><Label>LastWriteTime</Label></TableColumnHeader>
-          <TableColumnHeader><Label>Name</Label></TableColumnHeader>
-          <TableColumnHeader><Label>BaseName</Label></TableColumnHeader>
-          <TableColumnHeader><Label>DirectoryName</Label></TableColumnHeader>
-          <TableColumnHeader><Label>Extension</Label></TableColumnHeader>
-          <TableColumnHeader><Label>Length</Label></TableColumnHeader>
-          <TableColumnHeader><Label>SizeMiB</Label></TableColumnHeader>
-         
-          <TableColumnHeader><Label>ContainerFormat</Label></TableColumnHeader>
-          <TableColumnHeader><Label>MediaType</Label></TableColumnHeader>
-          
-        </TableHeaders>
-        <TableRowEntries>
-          <TableRowEntry>
-            <TableColumnItems>
-               
-                <TableColumnItem><PropertyName>PSPath</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>LastWriteTime</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>Name</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>BaseName</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>DirectoryName</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>Extension</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>Length</PropertyName></TableColumnItem>
-                <TableColumnItem><ScriptBlock>
-                  if ($null -ne $_.SizeMiB) {
-                    '{0:F3}' -f $_.SizeMiB
-                  }
-                </ScriptBlock></TableColumnItem>
-                <TableColumnItem><PropertyName>ContainerFormat</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>MediaType</PropertyName></TableColumnItem>
-                
-            </TableColumnItems>
-          </TableRowEntry>
-        </TableRowEntries>
-      </TableControl>
-    </View>
-    <View>
-      <Name>GetMediaInfo.VideoMediaInfoResult.List</Name>
-     <ViewSelectedBy>
-       <TypeName>GetMediaInfo.VideoMediaInfoResult</TypeName>
-     </ViewSelectedBy>
-     <ListControl>
-        <ListEntries>
-          <ListEntry>
-            <ListItems>
-              <ListItem><Label>Name</Label><PropertyName>Name</PropertyName></ListItem>
-              <ListItem><Label>Frame rate</Label><ScriptBlock>
-                  if ($null -ne $_.FrameRate) {
-                    '{0:0.###} fps' -f $_.FrameRate
-                  }
-                </ScriptBlock></ListItem>
-              <ListItem><Label>Resolution</Label><PropertyName>Resolution</PropertyName></ListItem>
-              <ListItem><Label>Duration</Label><ScriptBlock>
-                  if ($null -ne $_.Duration) {
-                    $_.Duration.ToString('hh\:mm\:ss\.fff')
-                  }
-                </ScriptBlock></ListItem>
-              <ListItem><Label>Video</Label><PropertyName>VideoCodec</PropertyName></ListItem>
-              <ListItem><Label>Audio</Label><PropertyName>AudioCodec</PropertyName></ListItem>
-            </ListItems>
-          </ListEntry>
-        </ListEntries>
-      </ListControl>
-    </View> -->
-
-    <!-- <View>
-      <Name>GetMediaInfo.AudioMediaInfoResult.List</Name>
-     <ViewSelectedBy>
-       <TypeName>GetMediaInfo.AudioMediaInfoResult</TypeName>
-     </ViewSelectedBy>
-     <ListControl>
-        <ListEntries>
-          <ListEntry>
-            <ListItems>
-              <ListItem><Label>Name</Label><PropertyName>Name</PropertyName></ListItem>
-              <ListItem><Label>Format</Label><PropertyName>ContainerFormat</PropertyName></ListItem>
-              <ListItem><Label>Duration</Label><ScriptBlock>
-                  if ($null -ne $_.Duration) {
-                    $_.Duration.ToString('hh\:mm\:ss\.fff')
-                  }
-                </ScriptBlock></ListItem>
-              <ListItem><Label>AudioBitRate</Label><PropertyName>AudioBitRate</PropertyName></ListItem>
-              <ListItem><Label>SamplingRate</Label><PropertyName>SamplingRate</PropertyName></ListItem>
-              <ListItem><Label>Artist</Label><PropertyName>Artist</PropertyName></ListItem>
-              <ListItem><Label>Album</Label><PropertyName>Album</PropertyName></ListItem>
-              <ListItem><Label>Track</Label><ScriptBlock>
-                  if ($null -ne $_.TrackNumber) {
-                    if ($null -ne $_.TrackCount) {
-                      '{0}/{1}' -f $_.TrackNumber, $_.TrackCount
-                    } else {
-                      $_.TrackNumber
-                    }
-                  }
-                </ScriptBlock></ListItem>
-            </ListItems>
-          </ListEntry>
-        </ListEntries>
-      </ListControl>
-    </View> -->
-
-    <!-- <View>
-      <Name>GetMediaInfo.ImageMediaInfoResult.List</Name>
-     <ViewSelectedBy>
-       <TypeName>GetMediaInfo.ImageMediaInfoResult</TypeName>
-     </ViewSelectedBy>
-     <ListControl>
-        <ListEntries>
-          <ListEntry>
-            <ListItems>
-              <ListItem><Label>Name</Label><PropertyName>Name</PropertyName></ListItem>
-              <ListItem><Label>Format</Label><PropertyName>ImageFormat</PropertyName></ListItem>
-              <ListItem><Label>Resolution</Label><PropertyName>Resolution</PropertyName></ListItem>
-              <ListItem><Label>BitDepth</Label><PropertyName>BitDepth</PropertyName></ListItem>
-              <ListItem><Label>SizeMiB</Label><ScriptBlock>
-  if ($null -ne $_.SizeMiB) {
-    '{0:F3}' -f $_.SizeMiB
-  }
-</ScriptBlock></ListItem>
-            </ListItems>
-          </ListEntry>
-        </ListEntries>
-      </ListControl>
-    </View> -->
-
-    <!-- <View>
-      <Name>GetMediaInfo.UnknownMediaInfoResult.List</Name>
-     <ViewSelectedBy>
-       <TypeName>GetMediaInfo.UnknownMediaInfoResult</TypeName>
-     </ViewSelectedBy>
-     <ListControl>
-        <ListEntries>
-          <ListEntry>
-            <ListItems>
-              <ListItem><Label>Name</Label><PropertyName>Name</PropertyName></ListItem>
-              <ListItem><Label>Format</Label><PropertyName>ContainerFormat</PropertyName></ListItem>
-              <ListItem><Label>SizeMiB</Label><PropertyName>SizeMiB</PropertyName></ListItem>
-            </ListItems>
-          </ListEntry>
-        </ListEntries>
-      </ListControl>
-    </View> -->
-
-    <!-- <View>
-      <Name>GetMediaInfo.VideoMediaInfoResult.Extended.List</Name>
-     <ViewSelectedBy>
-       <TypeName>GetMediaInfo.VideoMediaInfoResult.Extended</TypeName>
-     </ViewSelectedBy>
-     <ListControl>
-        <ListEntries>
-          <ListEntry>
-            <ListItems>
-             
-              
-              <ListItem><Label>PSPath</Label><PropertyName>PSPath</PropertyName></ListItem>
-              <ListItem><Label>LastWriteTime</Label><PropertyName>LastWriteTime</PropertyName></ListItem>
-              <ListItem><Label>Name</Label><PropertyName>Name</PropertyName></ListItem>
-              <ListItem><Label>BaseName</Label><PropertyName>BaseName</PropertyName></ListItem>
-              <ListItem><Label>DirectoryName</Label><PropertyName>DirectoryName</PropertyName></ListItem>
-              <ListItem><Label>Extension</Label><PropertyName>Extension</PropertyName></ListItem>
-               <ListItem><Label>Resolution</Label><PropertyName>Resolution</PropertyName></ListItem>
-              <ListItem><Label>Length</Label><PropertyName>Length</PropertyName></ListItem>
-              <ListItem><Label>SizeMiB</Label><PropertyName>SizeMiB</PropertyName></ListItem>
-              <ListItem><Label>Duration</Label><ScriptBlock>
-                  if ($null -ne $_.Duration) {
-                    $_.Duration.ToString('hh\:mm\:ss\.fff')
-                  }
-                </ScriptBlock></ListItem>
-              <ListItem><Label>ContainerFormat</Label><PropertyName>ContainerFormat</PropertyName></ListItem>
-              <ListItem><Label>MediaType</Label><PropertyName>MediaType</PropertyName></ListItem>
-              <ListItem><Label>VideoStreamCount</Label><PropertyName>VideoStreamCount</PropertyName></ListItem>
-              <ListItem><Label>VideoCodec</Label><PropertyName>VideoCodec</PropertyName></ListItem>
-              <ListItem><Label>VideoWidth</Label><PropertyName>VideoWidth</PropertyName></ListItem>
-              <ListItem><Label>VideoHeight</Label><PropertyName>VideoHeight</PropertyName></ListItem>
-              <ListItem><Label>FrameRateMode</Label><PropertyName>FrameRateMode</PropertyName></ListItem>
-              <ListItem><Label>FrameRate</Label><PropertyName>FrameRate</PropertyName></ListItem>
-              <ListItem><Label>VideoBitRate</Label><PropertyName>VideoBitRate</PropertyName></ListItem>
-              <ListItem><Label>DisplayAspectRatio</Label><PropertyName>DisplayAspectRatio</PropertyName></ListItem>
-              <ListItem><Label>FormatProfile</Label><PropertyName>FormatProfile</PropertyName></ListItem>
-              <ListItem><Label>ScanType</Label><PropertyName>ScanType</PropertyName></ListItem>
-              <ListItem><Label>ColorSpace</Label><PropertyName>ColorSpace</PropertyName></ListItem>
-              <ListItem><Label>ColorRange</Label><PropertyName>ColorRange</PropertyName></ListItem>
-              <ListItem><Label>ColorPrimaries</Label><PropertyName>ColorPrimaries</PropertyName></ListItem>
-              <ListItem><Label>TransferCharacteristics</Label><PropertyName>TransferCharacteristics</PropertyName></ListItem>
-              <ListItem><Label>MatrixCoefficients</Label><PropertyName>MatrixCoefficients</PropertyName></ListItem>
-              <ListItem><Label>AudioStreamCount</Label><PropertyName>AudioStreamCount</PropertyName></ListItem>
-              <ListItem><Label>AudioCodec</Label><PropertyName>AudioCodec</PropertyName></ListItem>
-              <ListItem><Label>AudioBitRate</Label><PropertyName>AudioBitRate</PropertyName></ListItem>
-              <ListItem><Label>AudioBitRateMode</Label><PropertyName>AudioBitRateMode</PropertyName></ListItem>
-              <ListItem><Label>TextStreamCount</Label><PropertyName>TextStreamCount</PropertyName></ListItem>
-              <ListItem><Label>TextFormats</Label><PropertyName>TextFormats</PropertyName></ListItem>
-             
-            </ListItems>
-          </ListEntry>
-        </ListEntries>
-      </ListControl>
-    </View> -->
-
-    <!-- <View>
-      <Name>GetMediaInfo.AudioMediaInfoResult.Extended.List</Name>
-     <ViewSelectedBy>
-       <TypeName>GetMediaInfo.AudioMediaInfoResult.Extended</TypeName>
-     </ViewSelectedBy>
-     <ListControl>
-        <ListEntries>
-          <ListEntry>
-            <ListItems>
-             
-              
-              <ListItem><Label>PSPath</Label><PropertyName>PSPath</PropertyName></ListItem>
-              <ListItem><Label>LastWriteTime</Label><PropertyName>LastWriteTime</PropertyName></ListItem>
-              <ListItem><Label>Name</Label><PropertyName>Name</PropertyName></ListItem>
-              <ListItem><Label>BaseName</Label><PropertyName>BaseName</PropertyName></ListItem>
-              <ListItem><Label>DirectoryName</Label><PropertyName>DirectoryName</PropertyName></ListItem>
-              <ListItem><Label>Extension</Label><PropertyName>Extension</PropertyName></ListItem>
-              <ListItem><Label>Length</Label><PropertyName>Length</PropertyName></ListItem>
-              <ListItem><Label>SizeMiB</Label><PropertyName>SizeMiB</PropertyName></ListItem>
-              <ListItem><Label>Duration</Label><ScriptBlock>
-                  if ($null -ne $_.Duration) {
-                    $_.Duration.ToString('hh\:mm\:ss\.fff')
-                  }
-                </ScriptBlock></ListItem>
-              <ListItem><Label>ContainerFormat</Label><PropertyName>ContainerFormat</PropertyName></ListItem>
-              <ListItem><Label>MediaType</Label><PropertyName>MediaType</PropertyName></ListItem>
-              <ListItem><Label>AudioStreamCount</Label><PropertyName>AudioStreamCount</PropertyName></ListItem>
-              <ListItem><Label>AudioCodec</Label><PropertyName>AudioCodec</PropertyName></ListItem>
-              <ListItem><Label>AudioBitRate</Label><PropertyName>AudioBitRate</PropertyName></ListItem>
-              <ListItem><Label>AudioBitRateMode</Label><PropertyName>AudioBitRateMode</PropertyName></ListItem>
-              <ListItem><Label>Channels</Label><PropertyName>Channels</PropertyName></ListItem>
-              <ListItem><Label>SamplingRate</Label><PropertyName>SamplingRate</PropertyName></ListItem>
-              <ListItem><Label>ArtworkCount</Label><PropertyName>ArtworkCount</PropertyName></ListItem>
-              <ListItem><Label>Title</Label><PropertyName>Title</PropertyName></ListItem>
-              <ListItem><Label>Album</Label><PropertyName>Album</PropertyName></ListItem>
-              <ListItem><Label>Artist</Label><PropertyName>Artist</PropertyName></ListItem>
-              <ListItem><Label>TrackNumber</Label><PropertyName>TrackNumber</PropertyName></ListItem>
-              <ListItem><Label>TrackCount</Label><PropertyName>TrackCount</PropertyName></ListItem>
-              <ListItem><Label>Genre</Label><PropertyName>Genre</PropertyName></ListItem>
-              <ListItem><Label>RecordedDate</Label><PropertyName>RecordedDate</PropertyName></ListItem>
-            </ListItems>
-          </ListEntry>
-        </ListEntries>
-      </ListControl>
-    </View> -->
-
-    <!-- <View>
-      <Name>GetMediaInfo.ImageMediaInfoResult.Extended.List</Name>
-     <ViewSelectedBy>
-       <TypeName>GetMediaInfo.ImageMediaInfoResult.Extended</TypeName>
-     </ViewSelectedBy>
-     <ListControl>
-        <ListEntries>
-          <ListEntry>
-            <ListItems>
-              
-              
-              <ListItem><Label>PSPath</Label><PropertyName>PSPath</PropertyName></ListItem>
-              <ListItem><Label>LastWriteTime</Label><PropertyName>LastWriteTime</PropertyName></ListItem>
-              <ListItem><Label>Name</Label><PropertyName>Name</PropertyName></ListItem>
-              <ListItem><Label>BaseName</Label><PropertyName>BaseName</PropertyName></ListItem>
-              <ListItem><Label>DirectoryName</Label><PropertyName>DirectoryName</PropertyName></ListItem>
-              <ListItem><Label>Extension</Label><PropertyName>Extension</PropertyName></ListItem>
-              <ListItem><Label>Length</Label><PropertyName>Length</PropertyName></ListItem>
-              <ListItem><Label>SizeMiB</Label><PropertyName>SizeMiB</PropertyName></ListItem>
-              <ListItem><Label>ContainerFormat</Label><PropertyName>ContainerFormat</PropertyName></ListItem>
-              <ListItem><Label>MediaType</Label><PropertyName>MediaType</PropertyName></ListItem>
-              <ListItem><Label>ImageStreamCount</Label><PropertyName>ImageStreamCount</PropertyName></ListItem>
-              <ListItem><Label>ImageFormat</Label><PropertyName>ImageFormat</PropertyName></ListItem>
-              <ListItem><Label>Width</Label><PropertyName>Width</PropertyName></ListItem>
-              <ListItem><Label>Height</Label><PropertyName>Height</PropertyName></ListItem>
-              <ListItem><Label>Resolution</Label><PropertyName>Resolution</PropertyName></ListItem>
-              <ListItem><Label>BitDepth</Label><PropertyName>BitDepth</PropertyName></ListItem>
-              <ListItem><Label>ColorSpace</Label><PropertyName>ColorSpace</PropertyName></ListItem>
-              <ListItem><Label>Title</Label><PropertyName>Title</PropertyName></ListItem>
-            </ListItems>
-          </ListEntry>
-              
-        </ListEntries>
-      </ListControl>
-    </View> -->
-
-    <!-- <View>
-      <Name>GetMediaInfo.UnknownMediaInfoResult.Extended.List</Name>
-     <ViewSelectedBy>
-       <TypeName>GetMediaInfo.UnknownMediaInfoResult.Extended</TypeName>
-     </ViewSelectedBy>
-     <ListControl>
-        <ListEntries>
-          <ListEntry>
-            <ListItems>
-              
-             
-              <ListItem><Label>PSPath</Label><PropertyName>PSPath</PropertyName></ListItem>
-              <ListItem><Label>LastWriteTime</Label><PropertyName>LastWriteTime</PropertyName></ListItem>
-              <ListItem><Label>Name</Label><PropertyName>Name</PropertyName></ListItem>
-              <ListItem><Label>BaseName</Label><PropertyName>BaseName</PropertyName></ListItem>
-              <ListItem><Label>DirectoryName</Label><PropertyName>DirectoryName</PropertyName></ListItem>
-              <ListItem><Label>Extension</Label><PropertyName>Extension</PropertyName></ListItem>
-              <ListItem><Label>Length</Label><PropertyName>Length</PropertyName></ListItem>
-              <ListItem><Label>SizeMiB</Label><PropertyName>SizeMiB</PropertyName></ListItem>
-              <ListItem><Label>ContainerFormat</Label><PropertyName>ContainerFormat</PropertyName></ListItem>
-              <ListItem><Label>MediaType</Label><PropertyName>MediaType</PropertyName></ListItem>
-             
-            </ListItems>
-          </ListEntry>
-        </ListEntries>
-      </ListControl>
-    </View> -->
-
+    
 
 
 
