@@ -169,7 +169,11 @@
 
           <ListItem>
             <Label>SizeMiB</Label>
-            <PropertyName>SizeMiB</PropertyName>
+            <ScriptBlock>
+  if ($null -ne $_.SizeMiB) {
+    '{0:F3}' -f $_.SizeMiB
+  }
+</ScriptBlock>
           </ListItem>
         </ListItems>
       </ListEntry>
@@ -190,7 +194,11 @@
 
           <ListItem>
             <Label>SizeMiB</Label>
-            <PropertyName>SizeMiB</PropertyName>
+            <ScriptBlock>
+  if ($null -ne $_.SizeMiB) {
+    '{0:F3}' -f $_.SizeMiB
+  }
+</ScriptBlock>
           </ListItem>
         </ListItems>
       </ListEntry>
@@ -259,12 +267,20 @@
 
           <ListItem>
             <Label>SizeMiB</Label>
-            <PropertyName>SizeMiB</PropertyName>
+            <ScriptBlock>
+  if ($null -ne $_.SizeMiB) {
+    '{0:F3}' -f $_.SizeMiB
+  }
+</ScriptBlock>
           </ListItem>
 
           <ListItem>
             <Label>Duration</Label>
-            <PropertyName>Duration</PropertyName>
+            <ScriptBlock>
+              if ($null -ne $_.Duration) {
+                $_.Duration.ToString('hh\:mm\:ss\.fff')
+              }
+            </ScriptBlock>
           </ListItem>
 
           <ListItem>
@@ -431,12 +447,20 @@
 
           <ListItem>
             <Label>SizeMiB</Label>
-            <PropertyName>SizeMiB</PropertyName>
+            <ScriptBlock>
+              if ($null -ne $_.SizeMiB) {
+                '{0:F3}' -f $_.SizeMiB
+              }
+            </ScriptBlock>
           </ListItem>
 
           <ListItem>
             <Label>Duration</Label>
-            <PropertyName>Duration</PropertyName>
+            <ScriptBlock>
+              if ($null -ne $_.Duration) {
+                $_.Duration.ToString('hh\:mm\:ss\.fff')
+              }
+            </ScriptBlock>
           </ListItem>
 
           <ListItem>
@@ -568,12 +592,20 @@
 
           <ListItem>
             <Label>SizeMiB</Label>
-            <PropertyName>SizeMiB</PropertyName>
+            <ScriptBlock>
+              if ($null -ne $_.SizeMiB) {
+                '{0:F3}' -f $_.SizeMiB
+              }
+            </ScriptBlock>
           </ListItem>
 
           <ListItem>
             <Label>Duration</Label>
-            <PropertyName>Duration</PropertyName>
+            <ScriptBlock>
+              if ($null -ne $_.Duration) {
+                $_.Duration.ToString('hh\:mm\:ss\.fff')
+              }
+            </ScriptBlock>
           </ListItem>
 
           <ListItem>
@@ -671,12 +703,20 @@
 
           <ListItem>
             <Label>SizeMiB</Label>
-            <PropertyName>SizeMiB</PropertyName>
+            <ScriptBlock>
+              if ($null -ne $_.SizeMiB) {
+                '{0:F3}' -f $_.SizeMiB
+              }
+            </ScriptBlock>
           </ListItem>
 
           <ListItem>
             <Label>Duration</Label>
-            <PropertyName>Duration</PropertyName>
+            <ScriptBlock>
+              if ($null -ne $_.Duration) {
+                $_.Duration.ToString('hh\:mm\:ss\.fff')
+              }
+            </ScriptBlock>
           </ListItem>
 
           <ListItem>
@@ -696,9 +736,147 @@
   </ListControl>
 </View>
 
+<View>
+  <Name>GetMediaInfo.MediaInfoResult.Table</Name>
+
+  <ViewSelectedBy>
+    <SelectionSetName>GetMediaInfo.MediaInfoResultTypes</SelectionSetName>
+  </ViewSelectedBy>
+
+  <TableControl>
+
+    <TableHeaders>
+      <TableColumnHeader><Label>Name</Label><Width>45</Width></TableColumnHeader>
+      <TableColumnHeader><Label>Type</Label></TableColumnHeader>
+      <TableColumnHeader><Label>Format</Label></TableColumnHeader>
+      <TableColumnHeader><Label>Details</Label></TableColumnHeader>
+      <TableColumnHeader><Label>Duration</Label></TableColumnHeader>
+      <TableColumnHeader><Label>Codec</Label></TableColumnHeader>
+      <TableColumnHeader><Label>SizeMiB</Label></TableColumnHeader>
+    </TableHeaders>
+
+    <TableRowEntries>
+
+  <TableRowEntry>
+    <TableColumnItems>
+
+      <!-- Name -->
+      <TableColumnItem>
+        <PropertyName>Name</PropertyName>
+      </TableColumnItem>
+
+
+      <!-- Type -->
+      <TableColumnItem>
+        <PropertyName>MediaType</PropertyName>
+      </TableColumnItem>
+
+
+      <!-- Format -->
+      <TableColumnItem>
+        <ScriptBlock>
+          if ($_.MediaType -eq 'Image') {
+            $_.ImageFormat
+          }
+          else {
+            $_.ContainerFormat
+          }
+        </ScriptBlock>
+      </TableColumnItem>
+
+
+      <!-- Details -->
+      <TableColumnItem>
+         <ScriptBlock>
+    $parts = @()
+
+    if ($_.PSObject.TypeNames -contains 'GetMediaInfo.VideoMediaInfoResult') {
+      if ($_.Resolution) {
+        $parts += $_.Resolution
+      }
+
+      if ($null -ne $_.FrameRate) {
+        $parts += ('{0:0.###} fps' -f $_.FrameRate)
+      }
+    }
+    elseif ($_.PSObject.TypeNames -contains 'GetMediaInfo.AudioMediaInfoResult') {
+      if ($_.Artist) {
+        $parts += $_.Artist
+      }
+
+      if ($_.Album) {
+        $parts += $_.Album
+      }
+
+      if ($null -ne $_.TrackNumber) {
+        if ($null -ne $_.TrackCount) {
+          $parts += ('Track {0}/{1}' -f $_.TrackNumber, $_.TrackCount)
+        }
+        else {
+          $parts += ('Track {0}' -f $_.TrackNumber)
+        }
+      }
+    }
+    elseif ($_.PSObject.TypeNames -contains 'GetMediaInfo.ImageMediaInfoResult') {
+      if ($_.Resolution) {
+        $parts += $_.Resolution
+      }
+
+      if ($null -ne $_.BitDepth) {
+        $parts += ('{0}-bit' -f $_.BitDepth)
+      }
+    }
+
+    $parts -join ', '
+  </ScriptBlock>
+      </TableColumnItem>
+
+
+      <!-- Duration -->
+      <TableColumnItem>
+        <ScriptBlock>
+          if ($null -ne $_.Duration) {
+            $_.Duration.ToString('hh\:mm\:ss\.fff')
+          }
+        </ScriptBlock>
+      </TableColumnItem>
+
+
+      <!-- Codec -->
+      <TableColumnItem>
+         <ScriptBlock>
+    if ($_.PSObject.TypeNames -contains 'GetMediaInfo.VideoMediaInfoResult') {
+      $_.VideoCodec
+    }
+    elseif ($_.PSObject.TypeNames -contains 'GetMediaInfo.AudioMediaInfoResult') {
+      $_.AudioCodec
+    }
+  </ScriptBlock>
+      </TableColumnItem>
+
+
+      <!-- SizeMiB -->
+      <TableColumnItem>
+        <ScriptBlock>
+          if ($null -ne $_.SizeMiB) {
+            '{0:F3}' -f $_.SizeMiB
+          }
+        </ScriptBlock>
+      </TableColumnItem>
+
+    </TableColumnItems>
+  </TableRowEntry>
+
+</TableRowEntries>
+  </TableControl>
+</View>
+
+
+
 
     <View>
       <Name>GetMediaInfo.VideoMediaInfoResult.Table</Name>
+      
       <ViewSelectedBy>
         <TypeName>GetMediaInfo.VideoMediaInfoResult</TypeName>
       </ViewSelectedBy>
@@ -790,6 +968,7 @@
 
     <View>
       <Name>GetMediaInfo.ImageMediaInfoResult.Table</Name>
+      
       <ViewSelectedBy>
         <TypeName>GetMediaInfo.ImageMediaInfoResult</TypeName>
       </ViewSelectedBy>
@@ -815,8 +994,9 @@
       </TableControl>
     </View>
 
-    <!-- <View>
+    <View>
       <Name>GetMediaInfo.UnknownMediaInfoResult.Table</Name>
+      
       <ViewSelectedBy>
         <TypeName>GetMediaInfo.UnknownMediaInfoResult</TypeName>
       </ViewSelectedBy>
@@ -836,10 +1016,430 @@
           </TableRowEntry>
         </TableRowEntries>
       </TableControl>
-    </View> -->
+    </View>
 
     <View>
+  <Name>GetMediaInfo.MediaInfoResult.Extended.Table</Name>
+
+  <ViewSelectedBy>
+    <SelectionSetName>GetMediaInfo.MediaInfoResult.Extended.Types</SelectionSetName>
+  </ViewSelectedBy>
+
+  <TableControl>
+
+    <TableHeaders>
+      <TableColumnHeader><Label>PSPath</Label></TableColumnHeader>
+      <TableColumnHeader><Label>LastWriteTime</Label></TableColumnHeader>
+      <TableColumnHeader><Label>Name</Label></TableColumnHeader>
+      <TableColumnHeader><Label>BaseName</Label></TableColumnHeader>
+      <TableColumnHeader><Label>DirectoryName</Label></TableColumnHeader>
+      <TableColumnHeader><Label>Extension</Label></TableColumnHeader>
+      <TableColumnHeader><Label>Length</Label></TableColumnHeader>
+      <TableColumnHeader><Label>SizeMiB</Label></TableColumnHeader>
+      <TableColumnHeader><Label>Duration</Label></TableColumnHeader>
+      <TableColumnHeader><Label>ContainerFormat</Label></TableColumnHeader>
+      <TableColumnHeader><Label>MediaType</Label></TableColumnHeader>
+
+      <TableColumnHeader><Label>Resolution</Label></TableColumnHeader>
+
+      <TableColumnHeader><Label>VideoStreamCount</Label></TableColumnHeader>
+      <TableColumnHeader><Label>VideoCodec</Label></TableColumnHeader>
+      <TableColumnHeader><Label>VideoWidth</Label></TableColumnHeader>
+      <TableColumnHeader><Label>VideoHeight</Label></TableColumnHeader>
+      <TableColumnHeader><Label>FrameRateMode</Label></TableColumnHeader>
+      <TableColumnHeader><Label>FrameRate</Label></TableColumnHeader>
+      <TableColumnHeader><Label>VideoBitRate</Label></TableColumnHeader>
+      <TableColumnHeader><Label>DisplayAspectRatio</Label></TableColumnHeader>
+      <TableColumnHeader><Label>FormatProfile</Label></TableColumnHeader>
+      <TableColumnHeader><Label>ScanType</Label></TableColumnHeader>
+      <TableColumnHeader><Label>ColorSpace</Label></TableColumnHeader>
+      <TableColumnHeader><Label>ColorRange</Label></TableColumnHeader>
+      <TableColumnHeader><Label>ColorPrimaries</Label></TableColumnHeader>
+      <TableColumnHeader><Label>TransferCharacteristics</Label></TableColumnHeader>
+      <TableColumnHeader><Label>MatrixCoefficients</Label></TableColumnHeader>
+
+      <TableColumnHeader><Label>AudioStreamCount</Label></TableColumnHeader>
+      <TableColumnHeader><Label>AudioCodec</Label></TableColumnHeader>
+      <TableColumnHeader><Label>AudioBitRate</Label></TableColumnHeader>
+      <TableColumnHeader><Label>AudioBitRateMode</Label></TableColumnHeader>
+      <TableColumnHeader><Label>Channels</Label></TableColumnHeader>
+      <TableColumnHeader><Label>SamplingRate</Label></TableColumnHeader>
+      <TableColumnHeader><Label>ArtworkCount</Label></TableColumnHeader>
+
+      <TableColumnHeader><Label>Title</Label></TableColumnHeader>
+      <TableColumnHeader><Label>Album</Label></TableColumnHeader>
+      <TableColumnHeader><Label>Artist</Label></TableColumnHeader>
+      <TableColumnHeader><Label>TrackNumber</Label></TableColumnHeader>
+      <TableColumnHeader><Label>TrackCount</Label></TableColumnHeader>
+      <TableColumnHeader><Label>Genre</Label></TableColumnHeader>
+      <TableColumnHeader><Label>RecordedDate</Label></TableColumnHeader>
+
+      <TableColumnHeader><Label>ImageStreamCount</Label></TableColumnHeader>
+      <TableColumnHeader><Label>ImageFormat</Label></TableColumnHeader>
+      <TableColumnHeader><Label>Width</Label></TableColumnHeader>
+      <TableColumnHeader><Label>Height</Label></TableColumnHeader>
+      <TableColumnHeader><Label>BitDepth</Label></TableColumnHeader>
+
+      <TableColumnHeader><Label>TextStreamCount</Label></TableColumnHeader>
+      <TableColumnHeader><Label>TextFormats</Label></TableColumnHeader>
+    </TableHeaders>
+
+
+    <TableRowEntries>
+
+      <!-- ========================================================= -->
+      <!-- VIDEO -->
+      <!-- ========================================================= -->
+
+      <TableRowEntry>
+        <EntrySelectedBy>
+          <TypeName>GetMediaInfo.VideoMediaInfoResult.Extended</TypeName>
+        </EntrySelectedBy>
+
+        <TableColumnItems>
+
+          <TableColumnItem><PropertyName>PSPath</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>LastWriteTime</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>Name</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>BaseName</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>DirectoryName</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>Extension</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>Length</PropertyName></TableColumnItem>
+
+          <TableColumnItem>
+            <ScriptBlock>
+              if ($null -ne $_.SizeMiB) {
+                '{0:F3}' -f $_.SizeMiB
+              }
+            </ScriptBlock>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <ScriptBlock>
+              if ($null -ne $_.Duration) {
+                $_.Duration.ToString('hh\:mm\:ss\.fff')
+              }
+            </ScriptBlock>
+          </TableColumnItem>
+
+          <TableColumnItem><PropertyName>ContainerFormat</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>MediaType</PropertyName></TableColumnItem>
+
+          <TableColumnItem><PropertyName>Resolution</PropertyName></TableColumnItem>
+
+          <TableColumnItem><PropertyName>VideoStreamCount</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>VideoCodec</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>VideoWidth</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>VideoHeight</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>FrameRateMode</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>FrameRate</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>VideoBitRate</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>DisplayAspectRatio</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>FormatProfile</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>ScanType</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>ColorSpace</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>ColorRange</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>ColorPrimaries</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>TransferCharacteristics</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>MatrixCoefficients</PropertyName></TableColumnItem>
+
+          <TableColumnItem><PropertyName>AudioStreamCount</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>AudioCodec</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>AudioBitRate</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>AudioBitRateMode</PropertyName></TableColumnItem>
+
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+
+          <TableColumnItem><PropertyName>TextStreamCount</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>TextFormats</PropertyName></TableColumnItem>
+
+        </TableColumnItems>
+      </TableRowEntry>
+
+
+      <!-- ========================================================= -->
+      <!-- AUDIO -->
+      <!-- ========================================================= -->
+
+      <TableRowEntry>
+        <EntrySelectedBy>
+          <TypeName>GetMediaInfo.AudioMediaInfoResult.Extended</TypeName>
+        </EntrySelectedBy>
+
+        <TableColumnItems>
+
+          <TableColumnItem><PropertyName>PSPath</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>LastWriteTime</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>Name</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>BaseName</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>DirectoryName</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>Extension</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>Length</PropertyName></TableColumnItem>
+
+          <TableColumnItem>
+            <ScriptBlock>
+              if ($null -ne $_.SizeMiB) {
+                '{0:F3}' -f $_.SizeMiB
+              }
+            </ScriptBlock>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <ScriptBlock>
+              if ($null -ne $_.Duration) {
+                $_.Duration.ToString('hh\:mm\:ss\.fff')
+              }
+            </ScriptBlock>
+          </TableColumnItem>
+
+          <TableColumnItem><PropertyName>ContainerFormat</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>MediaType</PropertyName></TableColumnItem>
+
+          <!-- Resolution -->
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+
+          <!-- Video -->
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+
+          <!-- Audio -->
+          <TableColumnItem><PropertyName>AudioStreamCount</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>AudioCodec</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>AudioBitRate</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>AudioBitRateMode</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>Channels</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>SamplingRate</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>ArtworkCount</PropertyName></TableColumnItem>
+
+          <!-- Tags -->
+          <TableColumnItem><PropertyName>Title</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>Album</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>Artist</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>TrackNumber</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>TrackCount</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>Genre</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>RecordedDate</PropertyName></TableColumnItem>
+
+          <!-- Image -->
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+
+          <!-- Text -->
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+
+        </TableColumnItems>
+      </TableRowEntry>
+
+
+      <!-- ========================================================= -->
+      <!-- IMAGE -->
+      <!-- ========================================================= -->
+
+      <TableRowEntry>
+        <EntrySelectedBy>
+          <TypeName>GetMediaInfo.ImageMediaInfoResult.Extended</TypeName>
+        </EntrySelectedBy>
+
+        <TableColumnItems>
+
+          <TableColumnItem><PropertyName>PSPath</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>LastWriteTime</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>Name</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>BaseName</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>DirectoryName</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>Extension</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>Length</PropertyName></TableColumnItem>
+
+          <TableColumnItem>
+            <ScriptBlock>
+              if ($null -ne $_.SizeMiB) {
+                '{0:F3}' -f $_.SizeMiB
+              }
+            </ScriptBlock>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <ScriptBlock>
+              if ($null -ne $_.Duration) {
+                $_.Duration.ToString('hh\:mm\:ss\.fff')
+              }
+            </ScriptBlock>
+          </TableColumnItem>
+
+          <TableColumnItem><PropertyName>ContainerFormat</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>MediaType</PropertyName></TableColumnItem>
+
+          <TableColumnItem><PropertyName>Resolution</PropertyName></TableColumnItem>
+
+          <!-- Video -->
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+
+          <TableColumnItem><PropertyName>ColorSpace</PropertyName></TableColumnItem>
+
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+
+          <!-- Audio -->
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+
+          <!-- Tags -->
+          <TableColumnItem><PropertyName>Title</PropertyName></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+
+          <!-- Image -->
+          <TableColumnItem><PropertyName>ImageStreamCount</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>ImageFormat</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>Width</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>Height</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>BitDepth</PropertyName></TableColumnItem>
+
+          <!-- Text -->
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+
+        </TableColumnItems>
+      </TableRowEntry>
+
+
+      <!-- ========================================================= -->
+      <!-- UNKNOWN / REQUIRED DEFAULT -->
+      <!-- ========================================================= -->
+
+      <TableRowEntry>
+        <TableColumnItems>
+
+          <TableColumnItem><PropertyName>PSPath</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>LastWriteTime</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>Name</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>BaseName</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>DirectoryName</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>Extension</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>Length</PropertyName></TableColumnItem>
+
+          <TableColumnItem>
+            <ScriptBlock>
+              if ($null -ne $_.SizeMiB) {
+                '{0:F3}' -f $_.SizeMiB
+              }
+            </ScriptBlock>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <ScriptBlock>
+              if ($null -ne $_.Duration) {
+                $_.Duration.ToString('hh\:mm\:ss\.fff')
+              }
+            </ScriptBlock>
+          </TableColumnItem>
+
+          <TableColumnItem><PropertyName>ContainerFormat</PropertyName></TableColumnItem>
+          <TableColumnItem><PropertyName>MediaType</PropertyName></TableColumnItem>
+
+          <!-- Remaining 37 subtype columns -->
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+          <TableColumnItem><ScriptBlock>$null</ScriptBlock></TableColumnItem>
+
+        </TableColumnItems>
+      </TableRowEntry>
+
+    </TableRowEntries>
+  </TableControl>
+</View>
+
+
+    <!-- <View>
       <Name>GetMediaInfo.VideoMediaInfoResult.Extended.Table</Name>
+      
       <ViewSelectedBy>
         <TypeName>GetMediaInfo.VideoMediaInfoResult.Extended</TypeName>
       </ViewSelectedBy>
@@ -930,10 +1530,11 @@
           </TableRowEntry>
         </TableRowEntries>
       </TableControl>
-    </View>
+    </View> -->
 
-    <View>
+    <!-- <View>
       <Name>GetMediaInfo.AudioMediaInfoResult.Extended.Table</Name>
+      
       <ViewSelectedBy>
         <TypeName>GetMediaInfo.AudioMediaInfoResult.Extended</TypeName>
       </ViewSelectedBy>
@@ -978,7 +1579,11 @@
                 <TableColumnItem><PropertyName>DirectoryName</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>Extension</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>Length</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>SizeMiB</PropertyName></TableColumnItem>
+                <TableColumnItem><ScriptBlock>
+  if ($null -ne $_.SizeMiB) {
+    '{0:F3}' -f $_.SizeMiB
+  }
+</ScriptBlock></TableColumnItem>
                 <TableColumnItem><ScriptBlock>
                   if ($null -ne $_.Duration) {
                     $_.Duration.ToString('hh\:mm\:ss\.fff')
@@ -1005,10 +1610,11 @@
           </TableRowEntry>
         </TableRowEntries>
       </TableControl>
-    </View>
+    </View> -->
 
-    <View>
+    <!-- <View>
       <Name>GetMediaInfo.ImageMediaInfoResult.Extended.Table</Name>
+      
       <ViewSelectedBy>
         <TypeName>GetMediaInfo.ImageMediaInfoResult.Extended</TypeName>
       </ViewSelectedBy>
@@ -1047,7 +1653,11 @@
                 <TableColumnItem><PropertyName>DirectoryName</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>Extension</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>Length</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>SizeMiB</PropertyName></TableColumnItem>
+                <TableColumnItem><ScriptBlock>
+                  if ($null -ne $_.SizeMiB) {
+                    '{0:F3}' -f $_.SizeMiB
+                  }
+                </ScriptBlock></TableColumnItem>
                 <TableColumnItem><ScriptBlock>
                   if ($null -ne $_.Duration) {
                     $_.Duration.ToString('hh\:mm\:ss\.fff')
@@ -1068,10 +1678,11 @@
           </TableRowEntry>
         </TableRowEntries>
       </TableControl>
-    </View>
+    </View> -->
 
     <!-- <View>
       <Name>GetMediaInfo.UnknownMediaInfoResult.Extended.Table</Name>
+      
       <ViewSelectedBy>
         <TypeName>GetMediaInfo.UnknownMediaInfoResult.Extended</TypeName>
       </ViewSelectedBy>
@@ -1102,8 +1713,11 @@
                 <TableColumnItem><PropertyName>DirectoryName</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>Extension</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>Length</PropertyName></TableColumnItem>
-                <TableColumnItem><PropertyName>SizeMiB</PropertyName></TableColumnItem>
-                
+                <TableColumnItem><ScriptBlock>
+                  if ($null -ne $_.SizeMiB) {
+                    '{0:F3}' -f $_.SizeMiB
+                  }
+                </ScriptBlock></TableColumnItem>
                 <TableColumnItem><PropertyName>ContainerFormat</PropertyName></TableColumnItem>
                 <TableColumnItem><PropertyName>MediaType</PropertyName></TableColumnItem>
                 
@@ -1111,7 +1725,7 @@
           </TableRowEntry>
         </TableRowEntries>
       </TableControl>
-    </View> -->
+    </View>
     <View>
       <Name>GetMediaInfo.VideoMediaInfoResult.List</Name>
      <ViewSelectedBy>
@@ -1139,9 +1753,9 @@
           </ListEntry>
         </ListEntries>
       </ListControl>
-    </View>
+    </View> -->
 
-    <View>
+    <!-- <View>
       <Name>GetMediaInfo.AudioMediaInfoResult.List</Name>
      <ViewSelectedBy>
        <TypeName>GetMediaInfo.AudioMediaInfoResult</TypeName>
@@ -1174,9 +1788,9 @@
           </ListEntry>
         </ListEntries>
       </ListControl>
-    </View>
+    </View> -->
 
-    <View>
+    <!-- <View>
       <Name>GetMediaInfo.ImageMediaInfoResult.List</Name>
      <ViewSelectedBy>
        <TypeName>GetMediaInfo.ImageMediaInfoResult</TypeName>
@@ -1189,12 +1803,16 @@
               <ListItem><Label>Format</Label><PropertyName>ImageFormat</PropertyName></ListItem>
               <ListItem><Label>Resolution</Label><PropertyName>Resolution</PropertyName></ListItem>
               <ListItem><Label>BitDepth</Label><PropertyName>BitDepth</PropertyName></ListItem>
-              <ListItem><Label>SizeMiB</Label><PropertyName>SizeMiB</PropertyName></ListItem>
+              <ListItem><Label>SizeMiB</Label><ScriptBlock>
+  if ($null -ne $_.SizeMiB) {
+    '{0:F3}' -f $_.SizeMiB
+  }
+</ScriptBlock></ListItem>
             </ListItems>
           </ListEntry>
         </ListEntries>
       </ListControl>
-    </View>
+    </View> -->
 
     <!-- <View>
       <Name>GetMediaInfo.UnknownMediaInfoResult.List</Name>
