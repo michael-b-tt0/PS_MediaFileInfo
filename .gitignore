@@ -5,3 +5,5 @@
 /obj
 /bin
 /MediaInfo/.vs
+/MediaInfo/runtimes/win-x64/native/MediaInfo.dll
+

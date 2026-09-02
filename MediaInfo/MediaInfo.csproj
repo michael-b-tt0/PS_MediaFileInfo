@@ -12,14 +12,19 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="..\runtimes\win-x64\MediaInfo.dll"
-          Link="runtimes\win-x64\native\MediaInfo.dll"
+    <None Include="runtimes\win-x64\native\MediaInfo.dll"
           CopyToOutputDirectory="PreserveNewest"
           CopyToPublishDirectory="PreserveNewest" />
     <None Update="Get-MediaInfo.psd1"
           CopyToOutputDirectory="PreserveNewest"
           CopyToPublishDirectory="PreserveNewest" />
     <None Update="GetMediaInfo.Format.ps1xml"
+          CopyToOutputDirectory="PreserveNewest"
+          CopyToPublishDirectory="PreserveNewest" />
+    <None Update="en-US\Get-MediaInfo-help.xml"
+          CopyToOutputDirectory="PreserveNewest"
+          CopyToPublishDirectory="PreserveNewest" />
+    <None Update="en-GB\Get-MediaInfo-help.xml"
           CopyToOutputDirectory="PreserveNewest"
           CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>

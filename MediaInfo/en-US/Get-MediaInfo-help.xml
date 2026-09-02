@@ -1,0 +1,316 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<helpItems schema="maml" xmlns="http://msh">
+  <command:command xmlns:maml="http://schemas.microsoft.com/maml/2004/10" xmlns:command="http://schemas.microsoft.com/maml/dev/command/2004/10" xmlns:dev="http://schemas.microsoft.com/maml/dev/2004/10" xmlns:MSHelp="http://msdn.microsoft.com/mshelp">
+    <command:details>
+      <command:name>Get-MediaFileInfo</command:name>
+      <command:verb>Get</command:verb>
+      <command:noun>MediaFileInfo</command:noun>
+      <maml:description>
+        <maml:para>Gets technical metadata for media files.</maml:para>
+      </maml:description>
+    </command:details>
+    <maml:description>
+      <maml:para>`Get-MediaFileInfo` opens each accepted filesystem file with the bundled MediaInfo library and returns a strongly typed result object.</maml:para>
+      <maml:para>Each file is classified independently from its detected streams. Results are emitted in input order even when multiple files are inspected concurrently.</maml:para>
+      <maml:para>The cmdlet supports video, audio, image, and unknown result types. A file with video streams is classified as video first, followed by audio, image, and then unknown when no supported stream is detected. Embedded artwork does not turn an audio file into an image result.</maml:para>
+      <maml:para>When `-MediaType` is specified, it is an extension-based prefilter. It runs before MediaInfo opens a file and does not replace the final stream-based classification on the result object.</maml:para>
+    </maml:description>
+    <command:syntax>
+      <command:syntaxItem>
+        <maml:name>Get-MediaFileInfo</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="true" pipelineInput="True (ByValue, ByPropertyName)" position="0" aliases="FullName">
+          <maml:name>Path</maml:name>
+          <maml:description>
+            <maml:para>Specifies one or more filesystem paths to inspect. Wildcard characters are supported. An exact existing file is preferred before wildcard expansion.</maml:para>
+            <maml:para>`Path` is the positional parameter and accepts pipeline input. The `FullName` alias supports pipeline property binding.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Media, Type, M">
+          <maml:name>MediaType</maml:name>
+          <maml:description>
+            <maml:para>Specifies one or more extension-based candidate types to include. Multiple values use OR semantics. Valid values are `Video`, `Audio`, `Image`, and `Unknown`.</maml:para>
+            <maml:para>`Unknown` matches extensions outside the known video, audio, and image extension sets. The filter does not inspect file contents. A misleading extension can therefore pass the filter and produce a different final `MediaType` after MediaInfo reads the file.</maml:para>
+            <maml:para>When this parameter is supplied, directories encountered during wildcard expansion are silently skipped. The cmdlet does not recursively enumerate a directory path by itself.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">GetMediaInfo.MediaType[]</command:parameterValue>
+          <dev:type>
+            <maml:name>GetMediaInfo.MediaType[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="threads, workers, t">
+          <maml:name>ThrottleLimit</maml:name>
+          <maml:description>
+            <maml:para>Specifies the maximum number of files inspected concurrently. Valid values are 1 through 8. The default is the processor count capped at 2. Use `1` for sequential processing.</maml:para>
+            <maml:para>Each worker owns an independent MediaInfo reader. This parameter does not change result classification or output ordering.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Int32</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Int32</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>Processor count capped at 2</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="D">
+          <maml:name>Detailed</maml:name>
+          <maml:description>
+            <maml:para>Displays all available properties in the extended formatting view. The result object itself is unchanged.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+      <command:syntaxItem>
+        <maml:name>Get-MediaFileInfo</maml:name>
+        <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="LP, PSPath">
+          <maml:name>LiteralPath</maml:name>
+          <maml:description>
+            <maml:para>Specifies one or more filesystem paths to inspect exactly as entered. Wildcard characters are treated literally.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+          <dev:type>
+            <maml:name>System.String[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Media, Type, M">
+          <maml:name>MediaType</maml:name>
+          <maml:description>
+            <maml:para>Specifies one or more extension-based candidate types to include. Multiple values use OR semantics. Valid values are `Video`, `Audio`, `Image`, and `Unknown`.</maml:para>
+            <maml:para>`Unknown` matches extensions outside the known video, audio, and image extension sets. The filter does not inspect file contents. A misleading extension can therefore pass the filter and produce a different final `MediaType` after MediaInfo reads the file.</maml:para>
+            <maml:para>When this parameter is supplied, directories encountered during wildcard expansion are silently skipped. The cmdlet does not recursively enumerate a directory path by itself.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">GetMediaInfo.MediaType[]</command:parameterValue>
+          <dev:type>
+            <maml:name>GetMediaInfo.MediaType[]</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>None</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="threads, workers, t">
+          <maml:name>ThrottleLimit</maml:name>
+          <maml:description>
+            <maml:para>Specifies the maximum number of files inspected concurrently. Valid values are 1 through 8. The default is the processor count capped at 2. Use `1` for sequential processing.</maml:para>
+            <maml:para>Each worker owns an independent MediaInfo reader. This parameter does not change result classification or output ordering.</maml:para>
+          </maml:description>
+          <command:parameterValue required="true" variableLength="false">System.Int32</command:parameterValue>
+          <dev:type>
+            <maml:name>System.Int32</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>Processor count capped at 2</dev:defaultValue>
+        </command:parameter>
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="D">
+          <maml:name>Detailed</maml:name>
+          <maml:description>
+            <maml:para>Displays all available properties in the extended formatting view. The result object itself is unchanged.</maml:para>
+          </maml:description>
+          <dev:type>
+            <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+            <maml:uri />
+          </dev:type>
+          <dev:defaultValue>False</dev:defaultValue>
+        </command:parameter>
+      </command:syntaxItem>
+    </command:syntax>
+    <command:parameters>
+      <command:parameter required="true" variableLength="true" globbing="true" pipelineInput="True (ByValue, ByPropertyName)" position="0" aliases="FullName">
+        <maml:name>Path</maml:name>
+        <maml:description>
+          <maml:para>Specifies one or more filesystem paths to inspect. Wildcard characters are supported. An exact existing file is preferred before wildcard expansion.</maml:para>
+          <maml:para>`Path` is the positional parameter and accepts pipeline input. The `FullName` alias supports pipeline property binding.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="true" variableLength="true" globbing="false" pipelineInput="True (ByPropertyName)" position="named" aliases="LP, PSPath">
+        <maml:name>LiteralPath</maml:name>
+        <maml:description>
+          <maml:para>Specifies one or more filesystem paths to inspect exactly as entered. Wildcard characters are treated literally.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
+        <dev:type>
+          <maml:name>System.String[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="Media, Type, M">
+        <maml:name>MediaType</maml:name>
+        <maml:description>
+          <maml:para>Specifies one or more extension-based candidate types to include. Multiple values use OR semantics. Valid values are `Video`, `Audio`, `Image`, and `Unknown`.</maml:para>
+          <maml:para>`Unknown` matches extensions outside the known video, audio, and image extension sets. The filter does not inspect file contents. A misleading extension can therefore pass the filter and produce a different final `MediaType` after MediaInfo reads the file.</maml:para>
+          <maml:para>When this parameter is supplied, directories encountered during wildcard expansion are silently skipped. The cmdlet does not recursively enumerate a directory path by itself.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">GetMediaInfo.MediaType[]</command:parameterValue>
+        <dev:type>
+          <maml:name>GetMediaInfo.MediaType[]</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>None</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="threads, workers, t">
+        <maml:name>ThrottleLimit</maml:name>
+        <maml:description>
+          <maml:para>Specifies the maximum number of files inspected concurrently. Valid values are 1 through 8. The default is the processor count capped at 2. Use `1` for sequential processing.</maml:para>
+          <maml:para>Each worker owns an independent MediaInfo reader. This parameter does not change result classification or output ordering.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Int32</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Int32</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>Processor count capped at 2</dev:defaultValue>
+      </command:parameter>
+      <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="D">
+        <maml:name>Detailed</maml:name>
+        <maml:description>
+          <maml:para>Displays all available properties in the extended formatting view. The result object itself is unchanged.</maml:para>
+        </maml:description>
+        <command:parameterValue required="true" variableLength="false">System.Management.Automation.SwitchParameter</command:parameterValue>
+        <dev:type>
+          <maml:name>System.Management.Automation.SwitchParameter</maml:name>
+          <maml:uri />
+        </dev:type>
+        <dev:defaultValue>False</dev:defaultValue>
+      </command:parameter>
+    </command:parameters>
+    <command:inputTypes>
+      <command:inputType>
+        <dev:type>
+          <maml:name>System.String</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>You can pipe path strings to `Get-MediaFileInfo`.</maml:para>
+        </maml:description>
+      </command:inputType>
+      <command:inputType>
+        <dev:type>
+          <maml:name>System.Management.Automation.PSObject</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Pipeline objects with a `FullName` or `PSPath` property can bind to the path parameter.</maml:para>
+        </maml:description>
+      </command:inputType>
+    </command:inputTypes>
+    <command:returnValues>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>GetMediaInfo.VideoMediaInfoResult</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returned when MediaInfo detects one or more video streams.</maml:para>
+        </maml:description>
+      </command:returnValue>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>GetMediaInfo.AudioMediaInfoResult</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returned when no video stream is present and MediaInfo detects one or more audio streams.</maml:para>
+        </maml:description>
+      </command:returnValue>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>GetMediaInfo.ImageMediaInfoResult</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returned when no video or audio stream is present and MediaInfo detects one or more image streams.</maml:para>
+        </maml:description>
+      </command:returnValue>
+      <command:returnValue>
+        <dev:type>
+          <maml:name>GetMediaInfo.UnknownMediaInfoResult</maml:name>
+        </dev:type>
+        <maml:description>
+          <maml:para>Returned when MediaInfo opens the file but detects no video, audio, or image stream.</maml:para>
+        </maml:description>
+      </command:returnValue>
+    </command:returnValues>
+    <maml:alertSet>
+      <maml:alert>
+        <maml:para>The result objects expose common file properties such as `FullName`, `PSPath`, `Name`, `BaseName`, `DirectoryName`, `Extension`, `Length`, `SizeMiB`, `LastWriteTime`, `Duration`, `ContainerFormat`, and `MediaType`.</maml:para>
+        <maml:para>Video results additionally expose video codec, resolution, frame rate, bit rate, aspect ratio, color, audio-stream, and text-stream information. Audio results expose codec, bit rate, channels, sampling rate, artwork count, and music metadata. Image results expose image format, resolution, bit depth, color space, and title.</maml:para>
+        <maml:para>Path, provider, and native read failures are written as non-terminating errors so other input files can continue. Non-filesystem providers are rejected.</maml:para>
+      </maml:alert>
+    </maml:alertSet>
+    <command:examples>
+      <command:example>
+        <maml:title>-------------- Example 1: Inspect one media file --------------</maml:title>
+        <dev:code>Get-MediaFileInfo -Path .\media\clip.mp4</dev:code>
+        <dev:remarks>
+          <maml:para>Gets metadata for a single file.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------- Example 2: Inspect wildcard-matched video files -------</maml:title>
+        <dev:code>Get-MediaFileInfo -Path .\media\* -MediaType Video</dev:code>
+        <dev:remarks>
+          <maml:para>Uses the filename extension to skip non-video candidates before MediaInfo reads them. Skipped files produce no output or error.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>----- Example 3: Inspect multiple media types concurrently -----</maml:title>
+        <dev:code>Get-MediaFileInfo -Path .\media\* -MediaType Video,Audio -ThrottleLimit 4</dev:code>
+        <dev:remarks>
+          <maml:para>Inspects video and audio candidates with up to four worker tasks. Results remain in input order.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>---------- Example 4: Process files from the pipeline ----------</maml:title>
+        <dev:code>Get-ChildItem .\media -File |
+    Get-MediaFileInfo -MediaType Audio</dev:code>
+        <dev:remarks>
+          <maml:para>Reads files supplied by `Get-ChildItem` through the `FullName` or `PSPath` property.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>----------------- Example 5: Use an exact path -----------------</maml:title>
+        <dev:code>Get-MediaFileInfo -LiteralPath '.\media\[release]\clip.mp4'</dev:code>
+        <dev:remarks>
+          <maml:para>Treats wildcard characters in the filename literally. The `-LiteralPath` aliases are `-LP` and `-PSPath`.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>----------- Example 6: Display all result properties -----------</maml:title>
+        <dev:code>Get-MediaFileInfo .\media\clip.mp4 -Detailed</dev:code>
+        <dev:remarks>
+          <maml:para>Uses the extended formatting view. `-Detailed` changes display formatting only; the emitted object remains strongly typed.</maml:para>
+        </dev:remarks>
+      </command:example>
+      <command:example>
+        <maml:title>------- Example 7: Select a result type in the pipeline -------</maml:title>
+        <dev:code>Get-MediaFileInfo .\media\* |
+    Where-Object MediaType -eq Video</dev:code>
+        <dev:remarks>
+          <maml:para>Filters by the final MediaInfo-detected result type after inspection.</maml:para>
+        </dev:remarks>
+      </command:example>
+    </command:examples>
+    <command:relatedLinks>
+      <maml:navigationLink>
+        <maml:linkText>MediaInfo</maml:linkText>
+        <maml:uri>https://mediaarea.net/MediaInfo</maml:uri>
+      </maml:navigationLink>
+      <maml:navigationLink>
+        <maml:linkText>Get-MediaInfo README</maml:linkText>
+        <maml:uri></maml:uri>
+      </maml:navigationLink>
+    </command:relatedLinks>
+  </command:command>
+</helpItems>
