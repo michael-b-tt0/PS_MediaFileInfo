@@ -130,6 +130,28 @@
   }
 </ScriptBlock>
           </ListItem>
+          <ListItem>
+            <Label>BitRate</Label>
+             <ScriptBlock>
+              if ($null -ne $_.AudioBitRate) {
+                '{0:0.###} kbps' -f ($_.AudioBitRate / 1000.0)
+              }
+            </ScriptBlock>
+          </ListItem>
+
+          <ListItem>
+            <Label>SamplingRate</Label>
+            <ScriptBlock>
+              if ($null -ne $_.SamplingRate) {
+                '{0:0.###} kHz' -f ($_.SamplingRate / 1000.0)
+              }
+            </ScriptBlock>
+            </ListItem>
+
+            <listItem>
+            <label>AudioBitRateMode</label>
+            <PropertyName>AudioBitRateMode</PropertyName>
+          </listItem>
 
           <ListItem>
             <Label>Artist</Label>
@@ -765,10 +787,12 @@
     <TableHeaders>
       <TableColumnHeader><Label>Name</Label></TableColumnHeader>
       <TableColumnHeader><Label>Type</Label><Width>8</Width></TableColumnHeader>
-      <TableColumnHeader><Label>Format</Label><Width>8</Width></TableColumnHeader>
+      <TableColumnHeader><Label>Format</Label><Width>12</Width></TableColumnHeader>
+      <TableColumnHeader><Label>Resolution</Label><Width>12</Width></TableColumnHeader>
+      <TableColumnHeader><Label>BitRate</Label><Width>15</Width></TableColumnHeader>
       <TableColumnHeader><Label>Details</Label></TableColumnHeader>
       <TableColumnHeader><Label>Duration</Label><Width>12</Width></TableColumnHeader>
-      <TableColumnHeader><Label>Codec</Label><Width>8</Width></TableColumnHeader>
+      <TableColumnHeader><Label>Codec</Label><Width>12</Width></TableColumnHeader>
       <TableColumnHeader><Label>SizeMiB</Label><Width>8</Width></TableColumnHeader>
     </TableHeaders>
 
@@ -801,6 +825,42 @@
         </ScriptBlock>
       </TableColumnItem>
 
+      <!-- Resolution -->
+      <TableColumnItem>
+  <ScriptBlock>
+    if ($_ -is [GetMediaInfo.AudioMediaInfoResult]) {
+      if ($null -ne $_.SamplingRate) {
+        '{0:0.###} kHz' -f ($_.SamplingRate / 1000.0)
+      }
+    }
+    elseif ($_.Resolution) {
+      $_.Resolution
+    }
+  </ScriptBlock>
+</TableColumnItem>
+
+
+<!-- BitRate -->
+<TableColumnItem>
+  <ScriptBlock>
+    if ($_ -is [GetMediaInfo.VideoMediaInfoResult]) {
+      if ($null -ne $_.VideoBitRate) {
+        '{0:0.##} Mbps' -f ($_.VideoBitRate / 1000000.0)
+      }
+    }
+    elseif ($_ -is [GetMediaInfo.AudioMediaInfoResult]) {
+      if ($null -ne $_.AudioBitRate) {
+        '{0:0.##} kbps' -f ($_.AudioBitRate / 1000.0)
+      }
+    }
+    elseif ($_ -is [GetMediaInfo.ImageMediaInfoResult]) {
+      if ($null -ne $_.BitDepth) {
+        '{0}-bit' -f $_.BitDepth
+      }
+    }
+  </ScriptBlock>
+</TableColumnItem>
+
 
       <!-- Details -->
       <TableColumnItem>
@@ -808,18 +868,24 @@
     $parts = @()
 
     if ($_.VideoCodec) {
-      if ($_.Resolution) {
-        $parts += $_.Resolution
-      }
+      
 
       if ($null -ne $_.FrameRate) {
         $parts += ('{0:0.###} fps' -f $_.FrameRate)
       }
+
+    
     }
     elseif ($_.AudioCodec) {
+
+      if($_.AudioBitRateMode) {
+        $parts += $_.AudioBitRateMode
+      }
       if ($_.Artist) {
         $parts += $_.Artist
       }
+    
+
 
       if ($_.Album) {
         $parts += $_.Album
@@ -829,15 +895,8 @@
         $parts += ('Track {0}' -f $_.TrackNumber)
       }
     }
-    elseif ($_.ImageFormat) {
-      if ($_.Resolution) {
-        $parts += $_.Resolution
-      }
 
-      if ($null -ne $_.BitDepth) {
-        $parts += ('{0}-bit' -f $_.BitDepth)
-      }
-    }
+
 
     $parts -join ', '
   </ScriptBlock>
