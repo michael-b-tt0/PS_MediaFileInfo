@@ -49,6 +49,7 @@ public sealed class GetMediaFileInfoCommand : PSCmdlet
     /// remains strongly typed.
     /// </summary>
     [Parameter]
+    [Alias("D")]
     public SwitchParameter Detailed { get; set; }
 
     /// <inheritdoc />

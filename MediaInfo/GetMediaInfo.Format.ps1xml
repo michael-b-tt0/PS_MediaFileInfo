@@ -69,6 +69,15 @@
               }
             </ScriptBlock>
           </ListItem>
+           <ListItem>
+            <Label>SizeMiB</Label>
+            <ScriptBlock>
+  if ($null -ne $_.SizeMiB) {
+    '{0:F3}' -f $_.SizeMiB
+  }
+</ScriptBlock>
+          </ListItem>
+
 
           <ListItem>
             <Label>Video</Label>
@@ -112,6 +121,14 @@
           <ListItem>
             <Label>Audio</Label>
             <PropertyName>AudioCodec</PropertyName>
+          </ListItem>
+          <ListItem>
+            <Label>SizeMiB</Label>
+            <ScriptBlock>
+  if ($null -ne $_.SizeMiB) {
+    '{0:F3}' -f $_.SizeMiB
+  }
+</ScriptBlock>
           </ListItem>
 
           <ListItem>
@@ -746,13 +763,13 @@
   <TableControl>
 
     <TableHeaders>
-      <TableColumnHeader><Label>Name</Label><Width>45</Width></TableColumnHeader>
-      <TableColumnHeader><Label>Type</Label></TableColumnHeader>
-      <TableColumnHeader><Label>Format</Label></TableColumnHeader>
+      <TableColumnHeader><Label>Name</Label></TableColumnHeader>
+      <TableColumnHeader><Label>Type</Label><Width>8</Width></TableColumnHeader>
+      <TableColumnHeader><Label>Format</Label><Width>8</Width></TableColumnHeader>
       <TableColumnHeader><Label>Details</Label></TableColumnHeader>
-      <TableColumnHeader><Label>Duration</Label></TableColumnHeader>
-      <TableColumnHeader><Label>Codec</Label></TableColumnHeader>
-      <TableColumnHeader><Label>SizeMiB</Label></TableColumnHeader>
+      <TableColumnHeader><Label>Duration</Label><Width>12</Width></TableColumnHeader>
+      <TableColumnHeader><Label>Codec</Label><Width>8</Width></TableColumnHeader>
+      <TableColumnHeader><Label>SizeMiB</Label><Width>8</Width></TableColumnHeader>
     </TableHeaders>
 
     <TableRowEntries>
@@ -878,11 +895,11 @@
       <TableControl>
         <TableHeaders>
           <TableColumnHeader><Label>Name</Label></TableColumnHeader>
-          <TableColumnHeader><Label>Frame rate</Label></TableColumnHeader>
-          <TableColumnHeader><Label>Resolution</Label></TableColumnHeader>
-          <TableColumnHeader><Label>Duration</Label></TableColumnHeader>
-          <TableColumnHeader><Label>VideoCodec</Label></TableColumnHeader>
-          <TableColumnHeader><Label>Audio</Label></TableColumnHeader>
+          <TableColumnHeader><Label>Frame rate</Label><Width>8</Width></TableColumnHeader>
+          <TableColumnHeader><Label>Resolution</Label><Width>8</Width></TableColumnHeader>
+          <TableColumnHeader><Label>Duration</Label><Width>10</Width></TableColumnHeader>
+          <TableColumnHeader><Label>VideoCodec</Label><Width>8</Width></TableColumnHeader>
+          <TableColumnHeader><Label>Audio</Label><Width>8</Width></TableColumnHeader>
         </TableHeaders>
         <TableRowEntries>
           <TableRowEntry>
@@ -1027,15 +1044,16 @@
       <!-- Common -->
       <TableColumnHeader><Label>PSPath</Label></TableColumnHeader>
       <TableColumnHeader><Label>LastWriteTime</Label></TableColumnHeader>
-      <TableColumnHeader><Label>Name</Label></TableColumnHeader>
-      <TableColumnHeader><Label>BaseName</Label></TableColumnHeader>
-      <TableColumnHeader><Label>DirectoryName</Label></TableColumnHeader>
       <TableColumnHeader><Label>Extension</Label></TableColumnHeader>
       <TableColumnHeader><Label>Length</Label></TableColumnHeader>
       <TableColumnHeader><Label>SizeMiB</Label></TableColumnHeader>
       <TableColumnHeader><Label>Duration</Label></TableColumnHeader>
       <TableColumnHeader><Label>ContainerFormat</Label></TableColumnHeader>
       <TableColumnHeader><Label>MediaType</Label></TableColumnHeader>
+      <TableColumnHeader><Label>Name</Label></TableColumnHeader>
+      <TableColumnHeader><Label>BaseName</Label></TableColumnHeader>
+      <TableColumnHeader><Label>DirectoryName</Label></TableColumnHeader>
+      
 
       <!-- Shared Video / Image -->
       <TableColumnHeader><Label>Resolution</Label></TableColumnHeader>
@@ -1108,17 +1126,7 @@
             <PropertyName>LastWriteTime</PropertyName>
           </TableColumnItem>
 
-          <TableColumnItem>
-            <PropertyName>Name</PropertyName>
-          </TableColumnItem>
-
-          <TableColumnItem>
-            <PropertyName>BaseName</PropertyName>
-          </TableColumnItem>
-
-          <TableColumnItem>
-            <PropertyName>DirectoryName</PropertyName>
-          </TableColumnItem>
+         
 
           <TableColumnItem>
             <PropertyName>Extension</PropertyName>
@@ -1150,6 +1158,17 @@
 
           <TableColumnItem>
             <PropertyName>MediaType</PropertyName>
+          </TableColumnItem>
+           <TableColumnItem>
+            <PropertyName>Name</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>BaseName</PropertyName>
+          </TableColumnItem>
+
+          <TableColumnItem>
+            <PropertyName>DirectoryName</PropertyName>
           </TableColumnItem>
 
 
