@@ -31,7 +31,7 @@ Get-MediaFileInfo -LiteralPath <String[]> [[-MediaType] <MediaType[]>] [[-Thrott
 
 Each file is classified independently from its detected streams. Results are emitted in input order even when multiple files are inspected concurrently.
 
-The cmdlet supports video, audio, image, and unknown result types. A file with video streams is classified as video first, followed by audio, image, and then unknown when no supported stream is detected. Embedded artwork does not turn an audio file into an image result.
+The cmdlet supports video, audio, image, and unknown result types. A file with video streams is classified as video first, followed by audio, image, and then unknown when no supported stream is detected. Embedded artwork does not turn an audio file into an image result. This means that media files with the wrong file extension should still be correctly resolved.
 
 When `-MediaType` is specified, it is an extension-based prefilter. It runs before MediaInfo opens a file and does not replace the final stream-based classification on the result object.
 
@@ -59,7 +59,7 @@ Uses the filename extension to skip non-video candidates before MediaInfo reads 
 Get-MediaFileInfo -Path .\media\* -MediaType Video,Audio -ThrottleLimit 4
 ```
 
-Inspects video and audio candidates with up to four worker tasks. Results remain in input order.
+Inspects video and audio candidates with up to four worker tasks. By default the application uses 2 workers. Results remain in input order. Rule of thumb is that you should use more works the faster your disk storage.
 
 ### Example 4: Process files from the pipeline
 
