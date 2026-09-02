@@ -52,6 +52,14 @@ public sealed class GetMediaFileInfoCommand : PSCmdlet
     [Alias("D")]
     public SwitchParameter Detailed { get; set; }
 
+    /// <summary>
+    /// Gets or sets the media types to include, determined from each file's
+    /// filename extension before MediaInfo reads the file.
+    /// </summary>
+    [Parameter]
+    [Alias("Media", "Type", "M")]
+    public MediaType[]? MediaType { get; set; }
+
     /// <inheritdoc />
     protected override void ProcessRecord()
     {
@@ -156,6 +164,11 @@ public sealed class GetMediaFileInfoCommand : PSCmdlet
     {
         if (!File.Exists(resolvedPath))
         {
+            if (Directory.Exists(resolvedPath) && HasMediaTypeFilter)
+            {
+                return;
+            }
+
             string message = Directory.Exists(resolvedPath)
                 ? $"'{originalPath}' resolves to a directory, not a file."
                 : $"The file '{originalPath}' does not exist.";
@@ -165,6 +178,11 @@ public sealed class GetMediaFileInfoCommand : PSCmdlet
                 "MediaFileNotFound",
                 ErrorCategory.ObjectNotFound,
                 originalPath);
+            return;
+        }
+
+        if (!ShouldProcessMediaType(resolvedPath))
+        {
             return;
         }
 
@@ -233,4 +251,12 @@ public sealed class GetMediaFileInfoCommand : PSCmdlet
 
     private static bool IsFileSystemProvider(ProviderInfo provider) =>
         typeof(FileSystemProvider).IsAssignableFrom(provider.ImplementingType);
+
+    private bool ShouldProcessMediaType(string path)
+    {
+        return MediaType is not { Length: > 0 } mediaTypes ||
+            mediaTypes.Contains(MediaTypeExtensionClassifier.Classify(path));
+    }
+
+    private bool HasMediaTypeFilter => MediaType is { Length: > 0 };
 }
