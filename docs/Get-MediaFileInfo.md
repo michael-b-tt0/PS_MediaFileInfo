@@ -9,7 +9,7 @@ schema: 2.0.0
 
 ## SYNOPSIS
 
-Gets technical metadata for media files.
+Gets technical metadata from media files.
 
 ## SYNTAX
 

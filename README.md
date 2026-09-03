@@ -1,8 +1,8 @@
-# Get-MediaInfo
+# Get-MediaFileInfo
 
-`Get-MediaInfo` is a Windows x64 PowerShell module for reading technical media metadata through the native [MediaInfo](https://mediaarea.net/MediaInfo) library.
+`Get-MediaFileInfo` is a modern Windows x64 PowerShell module for reading technical media metadata through the native [MediaInfo](https://mediaarea.net/MediaInfo) library. Multithreading is supported and enabled by default for accelerated media inspection. The module is compatible with PowerShell 7.6 and later on Windows x64.
 
-The module exports one cmdlet, `Get-MediaFileInfo`. It returns strongly typed result objects for video, audio, image, and unclassified media files.
+The module exports one cmdlet, `Get-MediaFileInfo`. It returns strongly typed result objects for video, audio, image, and unclassified media files. Table and List formatting is supported.
 
 ## Requirements
 
