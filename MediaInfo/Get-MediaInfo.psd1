@@ -7,7 +7,7 @@
     Description = 'MediaInfo integration for PowerShell.'
     PowerShellVersion = '7.6'
     CompatiblePSEditions = @('Core')
-    ProcessorArchitecture = 'Amd64'
+    ProcessorArchitecture = 'None'
     FormatsToProcess = @('GetMediaInfo.Format.ps1xml')
     FunctionsToExport = @()
     CmdletsToExport = @('Get-MediaFileInfo')

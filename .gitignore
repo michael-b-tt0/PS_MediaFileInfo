@@ -6,4 +6,7 @@
 /bin
 /MediaInfo/.vs
 /MediaInfo/runtimes/win-x64/native/MediaInfo.dll
+/MediaInfo/runtimes/win-arm64/native/developers
+/MediaInfo/runtimes/win-arm64/native/MediaInfo.dll
+
 

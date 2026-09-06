@@ -5,6 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefaultItemExcludes>$(DefaultItemExcludes);runtimes\**</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -13,6 +14,9 @@
 
   <ItemGroup>
     <None Include="runtimes\win-x64\native\MediaInfo.dll"
+          CopyToOutputDirectory="PreserveNewest"
+          CopyToPublishDirectory="PreserveNewest" />
+    <None Include="runtimes\win-arm64\native\MediaInfo.dll"
           CopyToOutputDirectory="PreserveNewest"
           CopyToPublishDirectory="PreserveNewest" />
     <None Update="Get-MediaInfo.psd1"

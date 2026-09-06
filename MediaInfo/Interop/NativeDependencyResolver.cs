@@ -25,12 +25,20 @@ internal static class NativeDependencyResolver
             return IntPtr.Zero;
         }
 
-        if (!OperatingSystem.IsWindows() ||
-            RuntimeInformation.ProcessArchitecture != Architecture.X64)
+        if (!OperatingSystem.IsWindows())
         {
             throw new PlatformNotSupportedException(
-                "This build of Get-MediaInfo includes MediaInfo only for Windows x64.");
+                "Get-MediaInfo is supported only on Windows x64 and Windows ARM64.");
         }
+
+        string runtimeIdentifier = RuntimeInformation.ProcessArchitecture switch
+        {
+            Architecture.X64 => "win-x64",
+            Architecture.Arm64 => "win-arm64",
+            _ => throw new PlatformNotSupportedException(
+                $"Get-MediaInfo does not support the '{RuntimeInformation.ProcessArchitecture}' process architecture. " +
+                "Supported architectures are x64 and ARM64.")
+        };
 
         string? assemblyDirectory = Path.GetDirectoryName(assembly.Location);
 
@@ -43,7 +51,7 @@ internal static class NativeDependencyResolver
         string nativeLibraryPath = Path.Combine(
             assemblyDirectory,
             "runtimes",
-            "win-x64",
+            runtimeIdentifier,
             "native",
             "MediaInfo.dll");
 
