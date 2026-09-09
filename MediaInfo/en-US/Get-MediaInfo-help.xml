@@ -14,6 +14,7 @@
       <maml:para>Each file is classified independently from its detected streams. Results are emitted in input order even when multiple files are inspected concurrently.</maml:para>
       <maml:para>The cmdlet supports video, audio, image, and unknown result types. A file with video streams is classified as video first, followed by audio, image, and then unknown when no supported stream is detected. Embedded artwork does not turn an audio file into an image result.</maml:para>
       <maml:para>When `-MediaType` is specified, it is an extension-based prefilter. It runs before MediaInfo opens a file and does not replace the final stream-based classification on the result object.</maml:para>
+      <maml:para>Directories encountered during wildcard expansion or supplied through the pipeline are silently skipped. An explicitly supplied directory reports a directory-not-a-file error. This behavior does not depend on `-MediaType`. The cmdlet does not recursively enumerate directories.</maml:para>
     </maml:description>
     <command:syntax>
       <command:syntaxItem>
@@ -21,7 +22,7 @@
         <command:parameter required="true" variableLength="true" globbing="true" pipelineInput="True (ByValue, ByPropertyName)" position="0" aliases="FullName">
           <maml:name>Path</maml:name>
           <maml:description>
-            <maml:para>Specifies one or more filesystem paths to inspect. Wildcard characters are supported. An exact existing file is preferred before wildcard expansion.</maml:para>
+            <maml:para>Specifies one or more filesystem paths to inspect. Wildcard characters are supported. An exact existing filesystem item is preferred before wildcard expansion.</maml:para>
             <maml:para>`Path` is the positional parameter and accepts pipeline input. The `FullName` alias supports pipeline property binding.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
@@ -36,7 +37,6 @@
           <maml:description>
             <maml:para>Specifies one or more extension-based candidate types to include. Multiple values use OR semantics. Valid values are `Video`, `Audio`, `Image`, and `Unknown`.</maml:para>
             <maml:para>`Unknown` matches extensions outside the known video, audio, and image extension sets. The filter does not inspect file contents. A misleading extension can therefore pass the filter and produce a different final `MediaType` after MediaInfo reads the file.</maml:para>
-            <maml:para>When this parameter is supplied, directories encountered during wildcard expansion are silently skipped. The cmdlet does not recursively enumerate a directory path by itself.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">GetMediaInfo.MediaType[]</command:parameterValue>
           <dev:type>
@@ -45,7 +45,7 @@
           </dev:type>
           <dev:defaultValue>None</dev:defaultValue>
         </command:parameter>
-        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="threads, workers, t">
+        <command:parameter required="false" variableLength="true" globbing="false" pipelineInput="False" position="named" aliases="threads, workers, T">
           <maml:name>ThrottleLimit</maml:name>
           <maml:description>
             <maml:para>Specifies the maximum number of files inspected concurrently. Valid values are 1 through 8. The default is the processor count capped at 2. Use `1` for sequential processing.</maml:para>
@@ -89,7 +89,6 @@
           <maml:description>
             <maml:para>Specifies one or more extension-based candidate types to include. Multiple values use OR semantics. Valid values are `Video`, `Audio`, `Image`, and `Unknown`.</maml:para>
             <maml:para>`Unknown` matches extensions outside the known video, audio, and image extension sets. The filter does not inspect file contents. A misleading extension can therefore pass the filter and produce a different final `MediaType` after MediaInfo reads the file.</maml:para>
-            <maml:para>When this parameter is supplied, directories encountered during wildcard expansion are silently skipped. The cmdlet does not recursively enumerate a directory path by itself.</maml:para>
           </maml:description>
           <command:parameterValue required="true" variableLength="false">GetMediaInfo.MediaType[]</command:parameterValue>
           <dev:type>
@@ -128,7 +127,7 @@
       <command:parameter required="true" variableLength="true" globbing="true" pipelineInput="True (ByValue, ByPropertyName)" position="0" aliases="FullName">
         <maml:name>Path</maml:name>
         <maml:description>
-          <maml:para>Specifies one or more filesystem paths to inspect. Wildcard characters are supported. An exact existing file is preferred before wildcard expansion.</maml:para>
+          <maml:para>Specifies one or more filesystem paths to inspect. Wildcard characters are supported. An exact existing filesystem item is preferred before wildcard expansion.</maml:para>
           <maml:para>`Path` is the positional parameter and accepts pipeline input. The `FullName` alias supports pipeline property binding.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">System.String[]</command:parameterValue>
@@ -155,7 +154,6 @@
         <maml:description>
           <maml:para>Specifies one or more extension-based candidate types to include. Multiple values use OR semantics. Valid values are `Video`, `Audio`, `Image`, and `Unknown`.</maml:para>
           <maml:para>`Unknown` matches extensions outside the known video, audio, and image extension sets. The filter does not inspect file contents. A misleading extension can therefore pass the filter and produce a different final `MediaType` after MediaInfo reads the file.</maml:para>
-          <maml:para>When this parameter is supplied, directories encountered during wildcard expansion are silently skipped. The cmdlet does not recursively enumerate a directory path by itself.</maml:para>
         </maml:description>
         <command:parameterValue required="true" variableLength="false">GetMediaInfo.MediaType[]</command:parameterValue>
         <dev:type>

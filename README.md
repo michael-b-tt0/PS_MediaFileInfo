@@ -6,7 +6,7 @@ The module exports one cmdlet, `Get-MediaFileInfo`. It returns strongly typed re
 
 ## Requirements
 
-- Windows x64, Windows ARM64, or Linux x64
+- Windows x64, Windows ARM64, or Linux x64 (GLIBC_2.33+)
 - PowerShell 7.6 or later
 - .NET 10 SDK to build the module
 - The native MediaInfo 26.05 library supplied at the project runtime path
@@ -85,7 +85,7 @@ The `-Detailed` switch changes only the default display view. The emitted object
 
 Required positional input. Supports PowerShell wildcards, pipeline input, and pipeline property binding through the `FullName` alias.
 
-An exact existing filesystem file is preferred before wildcard expansion. Paths must resolve through the FileSystem provider.
+An exact existing filesystem item is preferred before wildcard expansion. Paths must resolve through the FileSystem provider.
 
 ### `-LiteralPath <string[]>`
 
@@ -111,8 +111,6 @@ The extension map currently includes:
 
 This is only a candidate filter. The final `MediaType` on a result is determined from MediaInfo's detected streams, so a file with a misleading extension can still produce a different result type.
 
-When `-MediaType` is supplied, directories encountered during wildcard expansion are silently skipped. The cmdlet does not recursively enumerate a directory path by itself; use a wildcard, `Get-ChildItem`, or an explicit recursive enumeration when needed.
-
 Aliases: `-Media`, `-Type`, `-M`.
 
 ### `-ThrottleLimit <int>`
@@ -121,7 +119,7 @@ Controls the maximum number of files inspected concurrently. Valid values are 1 
 
 Each worker owns an independent native MediaInfo reader. Results are emitted on the PowerShell pipeline thread in input order, regardless of which worker finishes first. Use `-ThrottleLimit 1` for sequential processing.
 
-Aliases: `-threads`, `-workers`, `-t`.
+Aliases: `-threads`, `-workers`, `-T`.
 
 ### `-Detailed`
 
@@ -177,7 +175,9 @@ $result | Format-List *
 
 Path, provider, and native read failures are written as non-terminating PowerShell errors so other input files can continue to be processed. The cmdlet rejects non-filesystem providers.
 
-Without `-MediaType`, an explicitly supplied directory reports a directory-not-a-file error. With `-MediaType`, directories are treated as non-candidates and skipped.
+Directories encountered during wildcard expansion or supplied through the pipeline are silently skipped. An explicitly supplied directory reports a directory-not-a-file error. This behavior does not depend on `-MediaType`.
+
+The cmdlet does not recursively enumerate a directory path by itself; use a wildcard, `Get-ChildItem`, or an explicit recursive enumeration when needed.
 
 ## Architecture
 

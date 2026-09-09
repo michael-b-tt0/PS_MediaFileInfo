@@ -15,7 +15,8 @@
     AliasesToExport = @()
     PrivateData = @{
         PSData = @{
-            Tags = @('MediaInfo', 'Multimedia', 'Metadata', 'Video', 'Audio')
+            Tags = @('MediaInfo', 'Multimedia', 'Metadata', 'Video', 'Audio', 'Image', 'FileInfo')
+            ProjectUri = 'https://github.com/michael-b-tt0/PS_MediaFileInfo'
         }
     }
 }
