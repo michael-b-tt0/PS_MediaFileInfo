@@ -214,6 +214,8 @@ Returned when MediaInfo opens the file but detects no video, audio, or image str
 
 ## NOTES
 
+The bundled Linux x64 native libraries were built with GCC 11.4 and require GLIBC_2.33 or later. MediaInfo was compiled with libmms, libcurl, and Graphviz support disabled.
+
 The result objects expose common file properties such as `FullName`, `PSPath`, `Name`, `BaseName`, `DirectoryName`, `Extension`, `Length`, `SizeMiB`, `LastWriteTime`, `Duration`, `ContainerFormat`, and `MediaType`.
 
 Video results additionally expose video codec, resolution, frame rate, bit rate, aspect ratio, color, audio-stream, and text-stream information. Audio results expose codec, bit rate, channels, sampling rate, artwork count, and music metadata. Image results expose image format, resolution, bit depth, color space, and title.

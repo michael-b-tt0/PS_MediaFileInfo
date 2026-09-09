@@ -244,6 +244,7 @@
     </command:returnValues>
     <maml:alertSet>
       <maml:alert>
+        <maml:para>The bundled Linux x64 native libraries were built with GCC 11.4 and require GLIBC_2.33 or later. MediaInfo was compiled with libmms, libcurl, and Graphviz support disabled.</maml:para>
         <maml:para>The result objects expose common file properties such as `FullName`, `PSPath`, `Name`, `BaseName`, `DirectoryName`, `Extension`, `Length`, `SizeMiB`, `LastWriteTime`, `Duration`, `ContainerFormat`, and `MediaType`.</maml:para>
         <maml:para>Video results additionally expose video codec, resolution, frame rate, bit rate, aspect ratio, color, audio-stream, and text-stream information. Audio results expose codec, bit rate, channels, sampling rate, artwork count, and music metadata. Image results expose image format, resolution, bit depth, color space, and title.</maml:para>
         <maml:para>Path, provider, and native read failures are written as non-terminating errors so other input files can continue. Non-filesystem providers are rejected.</maml:para>

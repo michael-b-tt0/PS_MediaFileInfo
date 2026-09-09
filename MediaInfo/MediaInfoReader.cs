@@ -1,4 +1,3 @@
-using System.Runtime.InteropServices;
 using GetMediaInfo.Interop;
 
 namespace GetMediaInfo;
@@ -86,7 +85,7 @@ public sealed class MediaInfoReader : IDisposable
             MediaInfoValueKind.Text,
             MediaInfoValueKind.Name);
 
-        return CopyNativeString(value);
+        return MediaInfoNative.CopyString(value);
     }
 
     /// <summary>
@@ -114,7 +113,7 @@ public sealed class MediaInfoReader : IDisposable
         SetOption("Language", raw ? "raw" : string.Empty);
         SetOption("Complete", complete ? "1" : "0");
 
-        return CopyNativeString(MediaInfoNative.Inform(_handle, 0));
+        return MediaInfoNative.CopyString(MediaInfoNative.Inform(_handle, 0));
     }
 
     /// <summary>
@@ -126,20 +125,12 @@ public sealed class MediaInfoReader : IDisposable
         ArgumentException.ThrowIfNullOrWhiteSpace(option);
         ArgumentNullException.ThrowIfNull(value);
 
-        return CopyNativeString(MediaInfoNative.Option(_handle, option, value));
+        return MediaInfoNative.CopyString(
+            MediaInfoNative.Option(_handle, option, value));
     }
 
     /// <summary>
     /// Releases the native MediaInfo instance.
     /// </summary>
     public void Dispose() => _handle.Dispose();
-
-    private static string CopyNativeString(nint value)
-    {
-        // MediaInfo owns these buffers. Copy their UTF-16 contents immediately
-        // and never attempt to free the returned pointer.
-        return value == IntPtr.Zero
-            ? string.Empty
-            : Marshal.PtrToStringUni(value) ?? string.Empty;
-    }
 }

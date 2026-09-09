@@ -1,17 +1,19 @@
 # Get-MediaFileInfo
 
-`Get-MediaFileInfo` is a modern Windows PowerShell module for reading technical media metadata through the native [MediaInfo](https://mediaarea.net/MediaInfo) library. Multithreading is supported and enabled by default for accelerated media inspection. The module is compatible with PowerShell 7.6 and later on Windows x64 and Windows ARM64.
+`Get-MediaFileInfo` is a modern cross-platform PowerShell module for reading technical media metadata through the native [MediaInfo](https://mediaarea.net/MediaInfo) library. Multithreading is supported and enabled by default for accelerated media inspection. The module is compatible with PowerShell 7.6 and later on Windows x64, Windows ARM64, and Linux x64.
 
 The module exports one cmdlet, `Get-MediaFileInfo`. It returns strongly typed result objects for video, audio, image, and unclassified media files. Table and List formatting is supported.
 
 ## Requirements
 
-- Windows x64 or Windows ARM64
+- Windows x64, Windows ARM64, or Linux x64
 - PowerShell 7.6 or later
 - .NET 10 SDK to build the module
 - The native MediaInfo 26.05 library supplied at the project runtime path
 
-The native library matching the PowerShell process architecture is loaded from `runtimes/win-x64/native/MediaInfo.dll` or `runtimes/win-arm64/native/MediaInfo.dll` beside the managed module assembly. Ensure both DLLs are present in source/build or distribution artifacts before building or importing the module.
+The native library matching the PowerShell process platform is loaded from `runtimes/win-x64/native/MediaInfo.dll`, `runtimes/win-arm64/native/MediaInfo.dll`, or `runtimes/linux-x64/native/libmediainfo.so` beside the managed module assembly. The Linux build also bundles `libzen`; any other dependencies reported by `ldd` must either be bundled in the same native directory or installed by the Linux distribution.
+
+The bundled Linux x64 libraries were built with GCC 11.4 and require GLIBC_2.33 or later. MediaInfo was compiled with libmms, libcurl, and Graphviz support disabled because this module reads local media files and does not use those optional features.
 
 ## Build and import
 
@@ -203,7 +205,7 @@ New-ExternalHelp .\docs -OutputPath .\MediaInfo\en-GB -Force
 
 The generated `MediaInfo/en-US/Get-MediaInfo-help.xml` and `MediaInfo/en-GB/Get-MediaInfo-help.xml` files are copied into build and publish output beside the module manifest. Both currently use the same English source topic; the locale-specific directories allow PowerShell to select the appropriate help file for the host UI culture.
 
-The managed project is in `MediaInfo/`. The upstream MediaInfo developer sources and documentation remain in `runtimes/Developers/`; the deployable native dependencies are `MediaInfo/runtimes/win-x64/native/MediaInfo.dll` and `MediaInfo/runtimes/win-arm64/native/MediaInfo.dll`.
+The managed project is in `MediaInfo/`. The upstream MediaInfo developer sources and documentation remain in `runtimes/Developers/`; the deployable native dependencies are stored under the platform-specific directories in `MediaInfo/runtimes/`.
 
 ## Attribution and license
 
