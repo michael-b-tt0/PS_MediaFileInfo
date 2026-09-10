@@ -13,7 +13,7 @@ The module exports one cmdlet, `Get-MediaFileInfo`. It returns strongly typed re
 
 The native library matching the PowerShell process platform is loaded from `runtimes/win-x64/native/MediaInfo.dll`, `runtimes/win-arm64/native/MediaInfo.dll`, or `runtimes/linux-x64/native/libmediainfo.so` beside the managed module assembly. The Linux build also bundles `libzen`; any other dependencies reported by `ldd` must either be bundled in the same native directory or installed by the Linux distribution.
 
-The bundled Linux x64 libraries were built with GCC 11.4 and require GLIBC_2.33 or later. MediaInfo was compiled with libmms, libcurl, and Graphviz support disabled because this module reads local media files and does not use those optional features.
+The bundled Linux x64 libraries were built with GCC 11.4 and requires GLIBC_2.33 or later. MediaInfo was compiled with libmms, libcurl, and Graphviz support disabled because this module reads local media files and does not use those optional features.
 
 ## Build and import
 
