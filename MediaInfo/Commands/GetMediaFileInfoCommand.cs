@@ -81,7 +81,7 @@ public sealed class GetMediaFileInfoCommand : PSCmdlet
     /// </summary>
     [Parameter]
     [ValidateRange(1, MaximumThrottleLimit)]
-    [Alias("threads", "workers", "t")]
+    [Alias("threads", "workers", "T")]
     public int ThrottleLimit { get; set; } = Math.Clamp(
         Environment.ProcessorCount,
         1,
@@ -138,7 +138,7 @@ public sealed class GetMediaFileInfoCommand : PSCmdlet
                 return;
             }
 
-            ResolveAndProcessPath(path);
+            ResolveAndProcessPath(path, MyInvocation.ExpectingInput);
             DrainAvailableOutcomes();
         }
     }
@@ -192,7 +192,7 @@ public sealed class GetMediaFileInfoCommand : PSCmdlet
         _workChannel?.Writer.TryComplete();
     }
 
-    private void ResolveAndProcessPath(string path)
+    private void ResolveAndProcessPath(string path, bool isPipelineInput)
     {
         if (string.IsNullOrWhiteSpace(path))
         {
@@ -216,7 +216,10 @@ public sealed class GetMediaFileInfoCommand : PSCmdlet
 
                 if (IsFileSystemProvider(literalParameterProvider))
                 {
-                    QueueFile(resolvedPath, path);
+                    QueueFile(
+                        resolvedPath,
+                        path,
+                        skipDirectories: isPipelineInput);
                 }
                 else
                 {
@@ -236,11 +239,17 @@ public sealed class GetMediaFileInfoCommand : PSCmdlet
                     out ProviderInfo literalPathProvider,
                     out _);
 
-            if (IsFileSystemProvider(literalPathProvider) && File.Exists(literalPath))
+            if (IsFileSystemProvider(literalPathProvider) &&
+                (File.Exists(literalPath) || Directory.Exists(literalPath)))
             {
-                QueueFile(literalPath, path);
+                QueueFile(
+                    literalPath,
+                    path,
+                    skipDirectories: isPipelineInput);
                 return;
             }
+
+            bool isWildcardPath = WildcardPattern.ContainsWildcardCharacters(path);
 
             IReadOnlyList<string> resolvedPaths =
                 GetResolvedProviderPathFromPSPath(path, out ProviderInfo provider);
@@ -253,7 +262,10 @@ public sealed class GetMediaFileInfoCommand : PSCmdlet
 
             foreach (string resolvedPath in resolvedPaths)
             {
-                QueueFile(resolvedPath, path);
+                QueueFile(
+                    resolvedPath,
+                    path,
+                    skipDirectories: isPipelineInput || isWildcardPath);
             }
         }
         catch (PipelineStoppedException)
@@ -274,16 +286,21 @@ public sealed class GetMediaFileInfoCommand : PSCmdlet
         }
     }
 
-    private void QueueFile(string resolvedPath, string originalPath)
+    private void QueueFile(
+        string resolvedPath,
+        string originalPath,
+        bool skipDirectories)
     {
         if (!File.Exists(resolvedPath))
         {
-            if (Directory.Exists(resolvedPath) && HasMediaTypeFilter)
+            bool isDirectory = Directory.Exists(resolvedPath);
+
+            if (isDirectory && skipDirectories)
             {
                 return;
             }
 
-            string message = Directory.Exists(resolvedPath)
+            string message = isDirectory
                 ? $"'{originalPath}' resolves to a directory, not a file."
                 : $"The file '{originalPath}' does not exist.";
 
@@ -467,8 +484,6 @@ public sealed class GetMediaFileInfoCommand : PSCmdlet
         return MediaType is not { Length: > 0 } mediaTypes ||
             mediaTypes.Contains(MediaTypeExtensionClassifier.Classify(path));
     }
-
-    private bool HasMediaTypeFilter => MediaType is { Length: > 0 };
 
     private static bool IsMediaInfoReadException(Exception exception) =>
         exception is IOException or

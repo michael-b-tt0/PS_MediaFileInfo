@@ -35,6 +35,8 @@ The cmdlet supports video, audio, image, and unknown result types. A file with v
 
 When `-MediaType` is specified, it is an extension-based prefilter. It runs before MediaInfo opens a file and does not replace the final stream-based classification on the result object.
 
+Directories encountered during wildcard expansion or supplied through the pipeline are silently skipped. An explicitly supplied directory reports a directory-not-a-file error. This behavior does not depend on `-MediaType`. The cmdlet does not recursively enumerate directories.
+
 ## EXAMPLES
 
 ### Example 1: Inspect one media file
@@ -99,7 +101,7 @@ Filters by the final MediaInfo-detected result type after inspection.
 
 ### -Path
 
-Specifies one or more filesystem paths to inspect. Wildcard characters are supported. An exact existing file is preferred before wildcard expansion.
+Specifies one or more filesystem paths to inspect. Wildcard characters are supported. An exact existing filesystem item is preferred before wildcard expansion.
 
 `Path` is the positional parameter and accepts pipeline input. The `FullName` alias supports pipeline property binding.
 
@@ -135,8 +137,6 @@ Specifies one or more extension-based candidate types to include. Multiple value
 
 `Unknown` matches extensions outside the known video, audio, and image extension sets. The filter does not inspect file contents. A misleading extension can therefore pass the filter and produce a different final `MediaType` after MediaInfo reads the file.
 
-When this parameter is supplied, directories encountered during wildcard expansion are silently skipped. The cmdlet does not recursively enumerate a directory path by itself.
-
 ```yaml
 Type: GetMediaInfo.MediaType[]
 Parameter Sets: (All)
@@ -157,7 +157,7 @@ Each worker owns an independent MediaInfo reader. This parameter does not change
 ```yaml
 Type: System.Int32
 Parameter Sets: (All)
-Aliases: threads, workers, t
+Aliases: threads, workers, T
 Required: False
 Position: Named
 Default value: Processor count capped at 2
